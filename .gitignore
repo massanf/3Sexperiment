@@ -3,10 +3,11 @@
 /**/out/
 /**/figures/
 
-/**/*.ipynb_checkpoints
+/**/*.ipynb_checkpoints/
 /**/*.pdf
 /**/*.png
 /**/*.aux
 /**/*.dvi
 /**/*.log
 /**/*.out
+/**/.DS_Store
