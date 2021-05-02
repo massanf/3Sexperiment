@@ -1,2 +1,12 @@
-/A1/tex/out/
-/A1/circuit/out/
+/template/
+
+/**/out/
+/**/figures/
+
+/**/*.ipynb_checkpoints
+/**/*.pdf
+/**/*.png
+/**/*.aux
+/**/*.dvi
+/**/*.log
+/**/*.out
