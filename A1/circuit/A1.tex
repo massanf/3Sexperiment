@@ -1,0 +1,285 @@
+\documentclass[a4j,dvipdfmx]{article}
+%Format   -----------------------
+\usepackage[utf8]{inputenc}
+\usepackage[euler]{textgreek}
+\usepackage{enumitem}
+\usepackage[margin=30mm]{geometry}
+\usepackage{comment}
+\usepackage[dvipdfmx]{hyperref}
+\usepackage{float}
+\usepackage{subcaption}
+\usepackage{textcomp}
+\usepackage{palatino}
+\usepackage{xparse}
+%Format   -----------------------
+
+\def\replace#1#2#3{%
+ \def\tmp##1#2{##1#3\tmp}%
+   \tmp#1\stopreplace#2\stopreplace}
+\def\stopreplace#1\stopreplace{}
+
+%Circuit ------------------------
+%\begin{comment}
+\usepackage{amsmath,amssymb}
+\usepackage[dvipdfmx]{graphicx}
+\usepackage{siunitx}
+\usepackage{tikz}
+\usepackage{circuitikz}
+%\end{comment}
+%Circuit ------------------------
+
+%Command ---–--------------------
+\renewcommand{\figurename}{図}
+%--------------------------------
+
+%Title   ------------------------
+\title{実験レポートA1}
+\author{東京大学工学部電気電子工学科 03210517\\ 藤田 誠之 }
+\date{April 15, 2021}
+%Title   ------------------------
+\renewcommand{\baselinestretch}{1.1}
+\begin{document}
+
+\tikzset{component/.style={draw,thick,circle,fill=white,minimum size =0.75cm,inner sep=0pt}}
+
+\begin{figure}[H]
+  \begin{center}
+    \begin{circuitikz}[american currents]
+     \ctikzset{american inductors}
+	  \draw (0,4)
+      to[battery1] (0,0)
+      to[short] (5,0)
+	  to[short] (5,2) 
+	  node[component]{V} 
+	  to[short] (5,4)
+	  to[short] (2.5,4) node[component]{A} to [short] (0,4);
+	  \draw(5,4)
+	  to[short] (6,4);
+    \draw(7,2)
+	  node[njfet](njfet){}
+	  (njfet.base) node[anchor=east] {G}
+	  (njfet.collector) node[anchor=south] {D}
+	  (njfet.emitter) node[anchor=west] {S};
+	  to[short] (3,0);
+	  \draw(6,4)
+	  to[short] (njfet.base);
+    \draw(4,0)
+    to[short] (7,0)
+    to[short] (njfet.emitter);
+	  \draw ($(njfet)-(0.18,0)$) circle [radius=18pt];
+    \end{circuitikz}
+    \caption{a順方向}
+  \end{center}
+\end{figure}
+
+\begin{figure}[H]
+  \begin{center}
+    \begin{circuitikz}[american currents]
+     \ctikzset{american inductors}
+    \draw (0,4)
+      to[battery1] (0,0)
+      to[short] (5,0)
+    to[short] (5,2) 
+    node[component]{V} 
+    to[short] (5,4)
+    to[short] (2.5,4) node[component]{A} to [short] (0,4);
+    \draw(5,4)
+    to[short] (6,4);
+    \draw(7,2)
+    node[njfet](njfet){}
+    (njfet.base) node[anchor=east] {G}
+    (njfet.collector) node[anchor=south] {D}
+    (njfet.emitter) node[anchor=east] {S};
+    to[short] (3,0);
+    \draw(6,4)
+    to[short] (8,4)
+    to[short] (8,1.25)
+    to[short] (njfet.emitter);
+    \draw(4,0)
+    to[short] (6,0)
+    to[short] (njfet.base);
+    \draw ($(njfet)-(0.18,0)$) circle [radius=18pt];
+    \end{circuitikz}
+    \caption{a逆方向}
+  \end{center}
+\end{figure}
+
+\begin{figure}[H]
+  \begin{center}
+    \begin{circuitikz}[american currents]
+     \ctikzset{american inductors}
+    \draw (0,4)
+      to[battery1] (0,0)
+      to[short] (1,0)
+    to[short] (1,2) 
+    node[component]{V} 
+    to[short] (1,4);
+    \draw (0,4)
+    to[short] (3,4) node[component]{A} to [short] (6,4);
+    \draw(5,4)
+    to[short] (6,4);
+    \draw(7,2)
+    node[njfet](njfet){}
+    (njfet.base) node[anchor=east] {G}
+    (njfet.collector) node[anchor=south] {D}
+    (njfet.emitter) node[anchor=west] {S};
+    to[short] (3,0);
+    \draw(6,4)
+    to[short] (njfet.base);
+    \draw(1,0)
+    to[short] (7,0)
+    to[short] (njfet.emitter);
+    \draw ($(njfet)-(0.18,0)$) circle [radius=18pt];
+    \end{circuitikz}
+    \caption{b順方向}
+  \end{center}
+\end{figure}
+
+\begin{figure}[H]
+  \begin{center}
+    \begin{circuitikz}[american currents]
+     \ctikzset{american inductors}
+    \draw (0,4)
+      to[battery1] (0,0)
+      to[short] (1,0)
+    to[short] (1,2) 
+    node[component]{V} 
+    to[short] (1,4);
+    \draw (0,4)
+    to[short] (3,4) node[component]{A} to [short] (6,4);
+    \draw(5,4)
+    to[short] (6,4);
+    \draw(7,2) node[njfet](njfet){}
+    (njfet.base) node[anchor=east] {G}
+    (njfet.collector) node[anchor=south] {D}
+    (njfet.emitter) node[anchor=east] {S};
+    to[short] (3,0);
+    \draw(6,4)
+    to[short] (8,4)
+    to[short] (8,1.25)
+    to[short] (njfet.emitter);
+    \draw(1,0)
+    to[short] (6,0)
+    to[short] (njfet.base);
+    \draw ($(njfet)-(0.18,0)$) circle [radius=18pt];
+    \end{circuitikz}
+    \caption{b逆方向}
+  \end{center}
+\end{figure}
+
+
+\begin{figure}[H]
+  \begin{center}
+    \begin{circuitikz}[american currents]
+     \ctikzset{american inductors}
+    \draw (0,0)
+    to[battery1] (0,2)
+    to[short] (1,2)
+    to[short] (1,1) node[component](v2){V}
+    to[short] (1,0)
+    to[short] (0,0);
+    \draw ($(v2)+(0.4,0)$) node[anchor=west] {$V_{GS}$};
+    \draw(4,2.27) node[njfet](njfet){}
+    (njfet.base) node[anchor=north] {G}
+    (njfet.collector) node[anchor=east] {D}
+    (njfet.emitter) node[anchor=east] {S};
+    \draw ($(njfet)-(0.18,0)$) circle [radius=18pt];
+    \draw (0,2)
+    to[short] (njfet.base);
+    \draw (1,0)
+    to[short] (4,0)
+    to[short] (njfet.emitter);
+    \draw (njfet.collector)
+    to[short] (4,4)
+    to[short] (5,4)
+    to[short] (5,2)
+    node[component](v1){V}
+    to[short] (5,0)
+    to[short] (4,0);
+    \draw ($(v1)+(0.4,0)$) node[anchor=west] {$V_{DS}$};
+    \draw (5,4)
+    to[short] (6,4)
+    node[component]{A}
+    to[short] (7,4)
+    to[battery1] (7,0)
+    to[short] (4,0);
+    \end{circuitikz}
+    \caption{2}
+  \end{center}
+\end{figure}
+
+\maketitle
+
+\section{参考文献}
+『title』\url{<url>} 2021年n月m日アクセス
+\end{document}
+
+
+\begin{comment}
+--------------------------------
+--見出し
+\section{実験方法}
+--番号を振る
+\begin{enumerate}[label={(\arabic*)}]
+\item
+--画像の挿入
+\begin{figure}[H]
+    \begin{center}
+     	\includegraphics[width=8cm]{figures/name}
+        \caption{title)}
+    \end{center}
+\end{figure}
+
+--回路(例)
+\begin{figure}[H]
+  \begin{center}
+    \begin{circuitikz}[american currents]
+     \ctikzset{american inductors}
+	  \draw (0,0)
+      to[sV=$V_s$] (0,2)
+      to[L=$L_2$] (6,2)
+      to[C=$$
+      to[european resistor=$1\Omega$] (6,0)
+      to[short] (3,0);
+    \end{circuitikz}
+    \caption{3次規格化0-R型LPF}
+  \end{center}
+\end{figure}
+
+--表
+\begin{table}[H]
+    \begin{center}
+        \begin{tabular}{|l|l|c||} \hline
+            11 & 12 & 13 \\ \hline
+            21 & 22 & 23 \\ \hline
+            31 & 32 & 33\\ \hline
+        \end{tabular}
+        \caption{title}
+    \end{center}
+\end{table}
+\end{comment}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
