@@ -32,8 +32,9 @@
 \author{東京大学工学部電気電子工学科 03210517\ 藤田 誠之 }
 \date{May 15, 2021}
 %Title   ------------------------
-\renewcommand{\baselinestretch}{1.1}
+\renewcommand{\baselinestretch}{1.2}
 \begin{document}
+\tikzset{component/.style={draw,thick,circle,fill=white,minimum size =0.75cm,inner sep=0pt}}
 
 \maketitle
 
@@ -47,10 +48,123 @@
 
 \begin{enumerate}[label={(\arabic*)}]
     \setcounter{enumi}{1}
-    \item pm接合ダイオードの電流電圧特性について、測定結果と理論を定量的に比較し、理論からのズレとその要因を考察せよ。
+    \item pn接合ダイオードの電流電圧特性について、測定結果と理論を定量的に比較し、理論からのズレとその要因を考察せよ。
 \end{enumerate}
 
+\begin{enumerate}[label={(\arabic*)}]
+  \setcounter{enumi}{2}
+  \item FETの静特性について理論を調べ、測定値と理論値を定量的に比較した上で、理論からのズレを考察せよ。
+\end{enumerate}
 
+pn接合ダイオードの電流電圧特性は、\\
+\begin{center}
+  三極管領域において
+\end{center}
+$$
+I_D = \mu_nC_{OX}\frac{W}{L}\left((V_{GS}-V_{TH})V_{DS} - \frac{1}{2}V_{DS}^2\right) = \beta\left((V_{GS}-V_{TH})V_{DS} - \frac{1}{2}V_{DS}^2\right)
+$$
+\begin{center}
+    飽和領域において
+\end{center}
+$$
+I_D = \frac{1}{2}\mu_nC_{OX}\frac{W}{L}\left(V_{GS}-V_{TH}\right)^2 = \frac{1}{2}\beta(V_{GS}-V_{TH})^2
+$$
+\begin{align}
+  \mu_n &: \mbox{電子の移動度[m}^2\mbox{/Vs]}\nonumber \\
+  C_{OX} &: \mbox{単位面積あたりの酸化膜容量[F/m}^2\mbox{]} \nonumber \\
+  W &: \mbox{チャネル幅[m]} \nonumber \\
+  L &: \mbox{実効チャネル長[m]} \nonumber \\
+  \beta &: \mbox{利得係数} \nonumber
+\end{align}
+と表すことができる。ここで、今回使用したトランジスタ2SK30ATMのゲート・ドレイン間しゃ断電圧$V_{TH}$($V_{GS(OFF)}$)は規格書によると下限が-0.4V、上限が-5.0Vとなっている。図の回路図のような回路を組み立て、$V_{DS}$を変化させながら$I_D$を測定した結果、得られたデータは図のようになった。
+
+\begin{figure}
+  \begin{center}
+    \begin{circuitikz}[american currents]
+     \ctikzset{american inductors}
+    \draw (0,0)
+    to[battery1] (0,2)
+    to[short] (1,2)
+    to[short] (1,1) node[component](v2){V}
+    to[short] (1,0)
+    to[short] (0,0);
+    \draw ($(v2)+(0.4,0)$) node[anchor=west] {$V_{GS}$};
+    \draw(4,2.27) node[njfet](njfet){}
+    (njfet.base) node[anchor=north] {G}
+    (njfet.collector) node[anchor=east] {D}
+    (njfet.emitter) node[anchor=east] {S};
+    \draw ($(njfet)-(0.18,0)$) circle [radius=18pt];
+    \draw (0,2)
+    to[short] (njfet.base);
+    \draw (1,0)
+    to[short] (4,0)
+    to[short] (njfet.emitter);
+    \draw (njfet.collector)
+    to[short] (4,4)
+    to[short] (5,4)
+    to[short] (5,2)
+    node[component](v1){V}
+    to[short] (5,0)
+    to[short] (4,0);
+    \draw ($(v1)+(0.4,0)$) node[anchor=west] {$V_{DS}$};
+    \draw (5,4)
+    to[short] (6,4)
+    node[component]{A}
+    to[short] (7,4)
+    to[battery1] (7,0)
+    to[short] (4,0);
+    \end{circuitikz}
+    \caption{2}
+  \end{center}
+\end{figure}
+
+\begin{figure}
+  \begin{center}
+  \includegraphics[width=12cm]{../graph/figures/all.png}
+  \caption{title}
+  \end{center}
+\end{figure}
+
+\begin{figure}
+  \begin{center}
+  \includegraphics[width=12cm]{../graph/figures/lower.png}
+  \caption{title}
+  \end{center}
+\end{figure}
+
+上記に記した$I_D$の式を用いて、計測結果をフィッティングしようと試みた。$\beta$と$V_{TH}$は理論上$V_{DS}$に関係することのない定数であるとして、まずは飽和領域での値を合わせようとした。\\
+フィッティングした結果、$\beta = 2.25, V_{TH} = -1.335$とし、得られた飽和時のドレイン電流は以下の通りである。
+
+\begin{table}[H]
+  \begin{center}
+    \begin{tabular}{|c|c|c|c|} \hline
+      $V_{GS}$[V] & \begin{tabular}{c}$I_D$の飽和時の\\ドレイン電流[mA]\end{tabular}& \begin{tabular}{c}フィッテイング曲線の$I_D$の\\飽和時のドレイン電流[mA]\end{tabular}& 誤差率 \\ \hline
+      0.0 & 2.00 & 2.00 & 0.0\% \\ \hline
+      -0.4 & 1.00 & 0.984 & 98\% \\ \hline
+      -0.8 & 0.33 & 0.322 & 98\% \\ \hline
+      -1.2 & 0.023 & 0.021 & 91\% \\ \hline
+      \end{tabular}
+      \caption{title}
+  \end{center}
+\end{table}
+
+このように、飽和時のドレイン電流については非常によくフィッティングすることができた。ただ、$V_{TH}=-1.335$としているため、$V_{GS} < -1.335\mbox{V}$となるデータについてはトランジスタがONとなっていないため、上記の式では表せない。これについても、読み取られたデータと合致している。つまり、$V_{GS}$が$V_{TH}$を下回っている$V_{GS} = 1.6, 2.0$については、三極管領域が存在せず、直線でフィッティングできることがわかる。\\
+ただし、このフィッティング曲線はピンチオフ電圧の誤差が大きいこともわかる。理論上、ピンチオフ電圧は$V_{p} = V_{GS}-V{TH} = V_{GS} + 1.335$となる。それぞれの$V_{GS}$についての誤差は以下の表の様になる。
+
+\begin{table}[H]
+  \begin{center}
+    \begin{tabular}{|c|c|c|c|} \hline
+      $V_{GS}$[V] & \begin{tabular}{c}データから読み取れた$V_p$\end{tabular}　& \begin{tabular}{c}フィッテイング曲線の$V_p$\end{tabular}& 誤差率 \\ \hline
+      0.0 & 3.0 & 1.335 & 56\% \\ \hline
+      -0.4 & 1.5 & 0.955 & 36\% \\ \hline
+      -0.8 & 0.8 & 0.555 & 30\% \\ \hline
+      -1.2 & 0.2 & 0.155 & 22\% \\ \hline
+      \end{tabular}
+      \caption{title}
+  \end{center}
+\end{table}
+
+このように、とても誤差が大きくなってしまっていることがわかる。ここで、$V_{P} = V_{DS} - V_{TH}$であるから、$V_{TH}$が実際の値よりも大きく測定されたか、$V_{GS}$が実際の値よりも小さく測定されたということが考えられる。$V_{GS}$は直接電圧計を当てて測定しているため、大きな誤差が生じるとは考えにくいため、フィッティングした際に計算された$V_{TH}$の値に大きな誤差があると考えられるが、他のパラメータはよくフィッティングできているため、どうしてこのような結果となったのかをこのレポートの提出までに原因を特定することはできなかった。
 
 \section{参考文献}
 『title』\url{<url>} 2021年n月m日アクセス
