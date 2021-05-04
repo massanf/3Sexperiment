@@ -51,13 +51,60 @@
     \item pn接合ダイオードの電流電圧特性について、測定結果と理論を定量的に比較し、理論からのズレとその要因を考察せよ。
 \end{enumerate}
 
-pn接合ダイオードを以下の回路図のように
-\begin{figure}[H]
+FETトランジスタを以下の回路図のようにつなげ、電圧と電流を測定した。Dは接続していない。このように接続すると、トランジスタはpn接合ダイオードとなる。
+
+\begin{figure}
+  \begin{center}
+    \begin{circuitikz}[american currents]
+     \ctikzset{american inductors}
+	  \draw (0,4)
+      to[battery1] (0,0)
+      to[short] (5,0)
+	  to[short] (5,2) 
+	  node[component]{V}
+	  to[short] (5,4)
+	  to[short] (2.5,4) node[component]{A} to [short] (0,4);
+	  \draw(5,4)
+	  to[short] (6,4);
+    \draw(7,2)
+	  node[njfet](njfet){}
+	  (njfet.base) node[anchor=east] {G}
+	  (njfet.collector) node[anchor=south] {D}
+	  (njfet.emitter) node[anchor=west] {S};
+	  to[short] (3,0);
+	  \draw(6,4)
+	  to[short] (njfet.base);
+    \draw(4,0)
+    to[short] (7,0)
+    to[short] (njfet.emitter);
+	  \draw ($(njfet)-(0.18,0)$) circle [radius=18pt];
+    \end{circuitikz}
+    \caption{a順方向}
+  \end{center}
+\end{figure}
+ここで、電圧計で計測される電圧は$V_{GS}$、電流計で計測される電流を$I$とし計測されたデータをグラフ化したものが以下である。
+
+\begin{figure}
 \begin{center}
 \includegraphics[width=12cm]{../graph/figures/data_pn_a_normal.png}
 \caption{title)}
 \end{center}
 \end{figure}
+
+PN接合の特性は一般に以下の式で示される。
+$$
+I = I_0\left(e^{\frac{qV}{kT}}-1\right)
+$$
+しかし、実際のPN接合ダイオードでは、結晶欠陥や寄生抵抗などが存在することから、理想的な状態とはかなり異なっている。順バイアス時には、電圧を上げていくに連れ、まず欠陥による再結合により、電流が$e^{\frac{qV}{2kT}}$に比例するようになる。その後、$e^{\frac{qV}{kT}}$に比例した後、高注入効果により再び$e^{\frac{qV}{kT}}$に比例し、最終的には寄生抵抗により電圧と比例関係となるようになる。\\
+
+電流の対数をとったものの図は以下のようになる。
+\begin{figure}
+  \begin{center}
+  \includegraphics[width=12cm]{../graph/figures/data_pn_a_normal_log.png}
+  \caption{title)}
+  \end{center}
+\end{figure}
+ここで、青の点の部分はおよそ電流が$e^{\frac{qV}{kT}}$に比例していると考えられる。青い部分の傾きの逆数を最小２乗法で求めると、0.030となった。室温を$\deg{20}$とすると${qV}{kT}=0.026$となるので、誤差率11\%とよく一致していることがわかる。また、赤い部分は電流がおおよそ$e^{\frac{qV}{kT}}$に比例すると考えられるが、この部分の傾きを同じく最小二乗法で計算すると0.13となる。赤の部分に関しては高注入効果及び寄生抵抗により傾きがだんだんと減少していくはずであるので、得られた実験結果は理論と一致しているということができる。
 
 \begin{enumerate}[label={(\arabic*)}]
   \setcounter{enumi}{2}
