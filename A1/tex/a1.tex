@@ -43,8 +43,28 @@
 \begin{enumerate}[label={(\arabic*)}]
   \item 測定レンジと内部抵抗にはどのような関係があるのか、図A1.13を参照しながら推測し、測定結果と比較してみよ。pn接合ダイオードの電流電圧特性が正確に測定されていると思われる領域と、測定系の限界が(補正をしても)測定結果に影響を与えられていると思われる領域を明らかにせよ。
 \end{enumerate}
-理想的な電圧計と電流計の内部抵抗について考える。
+内部抵抗の補正をせずに、図の回路図を組んで計測した値をグラフ化し、低電圧時の部分を拡大すると、以下のようになる。
+\begin{figure}[H]
+  \begin{center}
+  \includegraphics[width=12cm]{../graph/figures/data_pn_a_normal_big_mess.png}
+  \caption{title)}
+  \end{center}
+\end{figure}
 
+0.3V付近で大きく測定値が動いていることがわかる。これは、0.3V付近で、使用した電圧計のマイナス端子を最大電圧0.3Vから最大電圧1.0Vのものへ切り替えたからと推測できる。ここで、最大電圧0.3Vの端子につなげたときの電圧計の内部抵抗は$2.98\Omega$、1.0Vのときは$9.97\Omega$である。電流の値を以下の式で補正した。
+$$
+I_{corrected} = I_{observed} - \frac{V}{r}
+$$
+その結果をグラフにすると以下のようになった。
+
+\begin{figure}[H]
+  \begin{center}
+  \includegraphics[width=12cm]{../graph/figures/data_pn_a_normal.png}
+  \caption{title)}
+  \end{center}
+\end{figure}
+
+このように、予想されるように曲線がつながった。しかし、このような計算の結果、一部の電流値がマイナスとなった。これは測定誤差に起因するものと思われる。また、図のように対数グラフを作成する際、0.2以下の部分は測定器の限界によってデータが散乱しており、$R^2$の値を計算しても0.30と相関があるとは言えない。この付近のデータは順バイアスの再結合などの特性を調べるために重要であるが、測定系の限界になってしまっている。
 
 \begin{enumerate}[label={(\arabic*)}]
     \setcounter{enumi}{1}
@@ -53,7 +73,7 @@
 
 FETトランジスタを以下の回路図のようにつなげ、電圧と電流を測定した。Dは接続していない。このように接続すると、トランジスタはpn接合ダイオードとなる。
 
-\begin{figure}
+\begin{figure}[H]
   \begin{center}
     \begin{circuitikz}[american currents]
      \ctikzset{american inductors}
@@ -84,7 +104,7 @@ FETトランジスタを以下の回路図のようにつなげ、電圧と電�
 \end{figure}
 ここで、電圧計で計測される電圧は$V_{GS}$、電流計で計測される電流を$I$とし計測されたデータをグラフ化したものが以下である。
 
-\begin{figure}
+\begin{figure}[H]
 \begin{center}
 \includegraphics[width=12cm]{../graph/figures/data_pn_a_normal.png}
 \caption{title)}
@@ -98,7 +118,7 @@ $$
 しかし、実際のPN接合ダイオードでは、結晶欠陥や寄生抵抗などが存在することから、理想的な状態とはかなり異なっている。順バイアス時には、電圧を上げていくに連れ、まず欠陥による再結合により、電流が$e^{\frac{qV}{2kT}}$に比例するようになる。その後、$e^{\frac{qV}{kT}}$に比例した後、高注入効果により再び$e^{\frac{qV}{kT}}$に比例し、最終的には寄生抵抗により電圧と比例関係となるようになる。\\
 
 電流の対数をとったものの図は以下のようになる。
-\begin{figure}
+\begin{figure}[H]
   \begin{center}
   \includegraphics[width=12cm]{../graph/figures/data_pn_a_normal_log.png}
   \caption{title)}
@@ -112,19 +132,19 @@ $$
 \end{enumerate}
 
 pn接合ダイオードの電流電圧特性は、\\
-\begin{center}
+\begin{center}[H]
   三極管領域において
 \end{center}
 $$
 I_D = \mu_nC_{OX}\frac{W}{L}\left((V_{GS}-V_{TH})V_{DS} - \frac{1}{2}V_{DS}^2\right) = \beta\left((V_{GS}-V_{TH})V_{DS} - \frac{1}{2}V_{DS}^2\right)
 $$
-\begin{center}
+\begin{center}[H]
     飽和領域において
 \end{center}
 $$
 I_D = \frac{1}{2}\mu_nC_{OX}\frac{W}{L}\left(V_{GS}-V_{TH}\right)^2 = \frac{1}{2}\beta(V_{GS}-V_{TH})^2
 $$
-\begin{align}
+\begin{align}[H]
   \mu_n &: \mbox{電子の移動度[m}^2\mbox{/Vs]}\nonumber \\
   C_{OX} &: \mbox{単位面積あたりの酸化膜容量[F/m}^2\mbox{]} \nonumber \\
   W &: \mbox{チャネル幅[m]} \nonumber \\
@@ -133,7 +153,7 @@ $$
 \end{align}
 と表すことができる。ここで、今回使用したトランジスタ2SK30ATMのゲート・ドレイン間しゃ断電圧$V_{TH}$($V_{GS(OFF)}$)は規格書によると下限が-0.4V、上限が-5.0Vとなっている。図の回路図のような回路を組み立て、$V_{DS}$を変化させながら$I_D$を測定した結果、得られたデータは図のようになった。
 
-\begin{figure}
+\begin{figure}[H]
   \begin{center}
     \begin{circuitikz}[american currents]
      \ctikzset{american inductors}
@@ -173,14 +193,14 @@ $$
   \end{center}
 \end{figure}
 
-\begin{figure}
+\begin{figure}[H]
   \begin{center}
   \includegraphics[width=12cm]{../graph/figures/all.png}
   \caption{title}
   \end{center}
 \end{figure}
 
-\begin{figure}
+\begin{figure}[H]
   \begin{center}
   \includegraphics[width=12cm]{../graph/figures/lower.png}
   \caption{title}
