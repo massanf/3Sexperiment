@@ -1,6 +1,7 @@
 \documentclass{ltjsarticle}
 \usepackage{luatexja}
 %Packages -----------------------
+\usepackage{listings}
 \usepackage[euler]{textgreek}
 \usepackage{enumitem}
 \usepackage[margin=30mm]{geometry}
@@ -19,16 +20,44 @@
 %Command ---–--------------------
 \renewcommand{\figurename}{図}
 \renewcommand{\baselinestretch}{1.1}
+\lstset{
+    numbers=left,
+    basicstyle={\ttfamily},
+    identifierstyle={\small},
+    commentstyle={\smallitshape},
+    keywordstyle={\small\bfseries},
+    ndkeywordstyle={\small},
+    stringstyle={\small\ttfamily},
+    frame={tb},
+    breaklines=true,
+    columns=[l]{fullflexible},
+    %numbers=left,
+    xrightmargin=0\zw,
+    xleftmargin=3\zw,
+    numberstyle={\scriptsize},
+    stepnumber=1,
+    numbersep=1,
+    lineskip=-0.5ex
+}
 %Command ------------------------
 %Title   ------------------------
-\title{実験レポート}
+\title{実験レポートA3}
 \author{東京大学工学部電気電子工学科 03210517\ 藤田 誠之 }
-\date{ ***** **, 2021}
+\date{May 6, 2021}
 %Title   ------------------------
 
 \begin{document}
 
 \maketitle
+\section{考察課題}
+\subsection{1日目}
+\subsubsection{AND回路の設計}
+
+%ここまでソースコードの表示に関する設定
+\begin{lstlisting}[caption=hoge,label=fuga]
+asdfasdf
+\end{lstlisting}
+
 
 \section{参考文献}
 『title』\url{<url>} 2021年n月m日アクセス
