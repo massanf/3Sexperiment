@@ -54,6 +54,7 @@
 \begin{document}
 
 \maketitle
+\begin{comment}
 \section{方法}
 Xilinx Vivadoを用いてHDLシミュレーションを実行した.
 \section{考察課題}
@@ -415,21 +416,293 @@ endmodule
     \end{center}
 \end{figure}
 図から値の名前が消えてしまっているが、上から順にclk、A, B, C, Sである。実際に、$C=A\oplus B$、$S=A\dot B$を表現することができていることがわかる。
-
 \subsubsection{フルアダーの設計}
+フルアダーは、ハーフアダーに過去の繰り上げの情報を付加して計算する。
 \begin{figure}[H]
     \begin{center}
         \begin{circuitikz}[american currents]
-            \tikzset{halfadder/.style={draw, thick, minimum height=1.5cm, minimum width=2cm, rounded corners = 0.3cm}}
-            \node[halfadder] (A) at (0,0) {};
+            \tikzset{fulladder/.style={draw, thick, minimum height=1.5cm, minimum width=2cm, rounded corners = 0.3cm}}
+            \node[fulladder] (A) at (0,0) {};
             \draw ($(A.north west)!.5!(A.west)$) to[short,l_=A,-o] ++(-1,0)
-            ($(A.south west)!.5!(A.west)$) to[short,l_=B,-o] ++(-1,0)
+            ($(A.west)!.5!(A.west)$) to[short,l_=B,-o] ++(-1,0)
+            ($(A.south west)!.5!(A.west)$) to[short,l_=$C_{in}$,-o] ++(-1,0)
             ($(A.north east)!.5!(A.east)$) to[short,l=S,-o] ++(1,0)
-            ($(A.south east)!.5!(A.east)$) to[short,l=C,-o] ++(1,0);
+            ($(A.south east)!.5!(A.east)$) to[short,l=$C_{out}$,-o] ++(1,0);
         \end{circuitikz}
         \caption{ハーフアダー}
     \end{center}
 \end{figure}
+入力は$A$、$B$、$C_{in}$の3つのwireであり、出力は$S$、$C_{in}$の2つのwireである。ハーフアダーを以下の様に2つつなげることにより、完結に表現することができる。
+\begin{figure}[H]
+    \begin{center}
+        \begin{circuitikz}[american currents]
+            \tikzset{fulladder/.style={draw, thick, minimum height=1.5cm, minimum width=2cm, rounded corners = 0.3cm}}
+            \node[fulladder] (A) at (0,0) {};
+            \node[fulladder] (B) at (4,0) {};
+            \draw ($(A.north west)!.5!(A.west)$) to[short,l_=A,-o] ++(-1,0)
+            ($(A.south west)!.5!(A.west)$) to[short,l_=B,-o] ++(-1,0)
+            ($(A.north east)!.5!(A.east)$) to[short] ++(1,0)
+            to ($(B.north west)!.5!(B.west)$) -- ++ (0,0)
+            ($(B.north east)!.5!(B.east)$) to[short] ++(3,0)
+            to[short, l=S, -o] ++(1,0)
+            ($(A.south east)!.5!(A.east)$) to[short] ++(0.5,0)
+            to[short] ++(0,-1.57)
+            to[short] ++(5,0) node[or port, anchor = in 2](or1){}
+            ($(B.south west)!.5!(B.west)$) to[short] ++(-0.5,0)
+            to[short] ++(0, -1)
+            to[short] ++(-3.5,0)
+            to[short,l_=$C_{in}$,-o] ++(-1,0)
+            ($(B.south east)!.5!(B.east)$) to[short] ++(0.5,0)
+            to[short] ++(0,-1)
+            to (or1.in 1) -- ++(0,0)
+            (or1.out) to[short,l=$C_{out}$,-o] ++(1,0);
+        \end{circuitikz}
+        \caption{ハーフアダー}
+    \end{center}
+\end{figure}
+\begin{lstlisting}[caption=フルアダーデザイン,language=verilog]
+`timescale 1ns / 1ps
+module Fulladder(
+    input wire CI,
+    input wire A,
+    input wire B,
+    output wire S,
+    output wire CO
+    );
+    wire w1;
+    wire w2;
+    wire w3;
+    HalfAdder HalfAdder0(
+        .A(A),
+        .B(B),
+        .S(w1),
+        .C(w2)
+        );
+    HalfAdder HalfAdder1(
+        .A(w1),
+        .B(CI),
+        .S(S),
+        .C(w3)
+        );
+    assign CO = w2|w3;
+endmodule
+\end{lstlisting}
+$A$,$B$,$C_{in}$に関してそれぞれ0,1の8通りを表現する。
+\begin{lstlisting}[caption=フルアダーテストベンチ,language=verilog]
+module FullAddertestbench;
+    // parameter
+    parameter CYCLE = 1000; // clock cycle
+    parameter HALF_CYCLE = 500; // half cycle
+    parameter DLY = 500; // delay
+    // wire/reg
+    reg clk;
+    reg  A,B,CI;
+    wire CO,S;
+    // DUT module
+    Fulladder  Fulladder0(
+        .A(A),
+        .B(B),
+        .CI(CI),
+        .CO(CO),
+        .S(S)
+    );    
+    // clock generator
+    always begin
+        clk = 1'b1;
+        #(HALF_CYCLE) clk = 1'b0;
+        #(HALF_CYCLE);
+    end
+    // test scenario
+    initial begin
+        // for and_gate
+        A = 1'b0; B = 1'b0; CI = 1'b0;
+        #100 $display("A=%b B=%b CI=%b CO=%b S=%b ", A, B, CI, CO, S);
+        A = 1'b1; B = 1'b0; CI = 1'b0;
+        #100 $display("A=%b B=%b CI=%b CO=%b S=%b", A, B, CI, CO, S); 
+        A = 1'b0; B = 1'b1; CI = 1'b0;
+        #100 $display("A=%b B=%b CI=%b CO=%b S=%b", A, B, CI, CO, S);  
+        A = 1'b1; B = 1'b1; CI = 1'b0;
+        #100 $display("A=%b B=%b CI=%b CO=%b S=%b", A, B, CI, CO, S);
+        A = 1'b0; B = 1'b0; CI = 1'b1;
+        #100 $display("A=%b B=%b CI=%b CO=%b S=%b ", A, B, CI, CO, S);
+        A = 1'b1; B = 1'b0; CI = 1'b1;
+        #100 $display("A=%b B=%b CI=%b CO=%b S=%b", A, B, CI, CO, S); 
+        A = 1'b0; B = 1'b1; CI = 1'b1;
+        #100 $display("A=%b B=%b CI=%b CO=%b S=%b", A, B, CI, CO, S);  
+        A = 1'b1; B = 1'b1; CI = 1'b1;
+        #100 $display("A=%b B=%b CI=%b CO=%b S=%b", A, B, CI, CO, S);
+        repeat(10) @(posedge clk); // repeat 10 times
+        $finish;
+    end
+endmodule
+\end{lstlisting}
+\begin{figure}[H]
+    \begin{center}
+        \includegraphics[width=10cm]{figures/fulladder.png}
+        \caption{フルアダー回路の波形}
+    \end{center}
+\end{figure}
+上から$A$、$B$、$C_{in}$、$S$、$C_{out}$である。入力に合致した値が得られていることがわかる。
+\subsubsection{4-bit リップルキャリアアダーの設計}
+フルアダーを4つ並べて繋げたものである。
+
+\begin{figure}[H]
+    \begin{center}
+        \begin{circuitikz}[american currents]
+            \tikzset{one bit adder/.style={muxdemux, muxdemux def={Lh=4, NL=2, Rh=2, NR=1, NB=1, NT=1, w=1.5, inset w=0.5, inset Lh=2, inset Rh=0, square pins=1}}}
+            \draw
+            node[one bit adder, rotate=-90](D) at (0,0) {A}
+            node[one bit adder, rotate=-90](C) at (3,0) {B}
+            node[one bit adder, rotate=-90](B) at (6,0) {C}
+            node[one bit adder, rotate=-90](A) at (9,0) {D}
+            (A.tpin 1) to(B.bpin 1) -- ++(0,0)
+            (B.tpin 1) to(C.bpin 1) -- ++(0,0)
+            (C.tpin 1) to(D.bpin 1) -- ++(0,0);
+        \end{circuitikz}
+        \caption{4-bit リップルキャリアアダー}
+    \end{center}
+\end{figure}
+Aの初期値は0とし、4bitの16進数として表示された値をそれぞれの桁の値をそれぞれ対応するフルアダーに入力する。Dの$C_{out}$は最終的な計算結果のキャリーとなることがわかる。
+\begin{lstlisting}[caption=4-bit リップルキャリアアダーデザイン,language=verilog]
+`timescale 1ns / 1ps
+module Addripple4(
+    input wire [3:0]a,
+    input wire [3:0]b,
+    output wire [3:0]s,
+    output wire of
+    );
+    Fulladder Fulladder0(.S(s[0]),.B(b[0]),.A(a[0]),.CI(0),.CO(w0));
+    Fulladder Fulladder1(.S(s[1]),.B(b[1]),.A(a[1]),.CI(w0),.CO(w1));
+    Fulladder Fulladder2(.S(s[2]),.B(b[2]),.A(a[2]),.CI(w1),.CO(w2));
+    Fulladder Fulladder3(.S(s[3]),.B(b[3]),.A(a[3]),.CI(w2),.CO(of));
+endmodule
+\end{lstlisting}
+AとBが4bitずつの$2^8$通りを計算するテストベンチを作成した。
+\begin{lstlisting}[caption=*****,language=verilog]
+    module testbench_addripple4;
+    // parameter
+    parameter CYCLE = 1000; // clock cycle
+    parameter HALF_CYCLE = 500; // half cycle
+    parameter DLY = 500; // delay
+    // wire/reg
+    reg clk;
+    reg  [3:0]A,B;
+    wire C;
+    wire [3:0]S;
+    // DUT module
+    Addripple4 Addripple4_0(A,B,S,C);
+    // clock generator
+    always begin
+        clk = 1'b1;
+        #(HALF_CYCLE) clk = 1'b0;
+        #(HALF_CYCLE);
+    end
+     integer i;
+     integer j;
+    // test scenario
+    initial begin
+        // initialize
+        A = 4'b0; B = 4'b0;
+        // for add4_gate
+        for(i = 0; i<16; i = i+1) begin
+          for(j = 0; j<16; j = j+1)begin
+            A = i; B = j;
+            #40 $display("A=%b B=%b C=%b S=%b", A, B, C, S);
+          end        
+        end
+        repeat(10) @(posedge clk); // repeat 10 times
+        $finish;
+    end
+endmodule
+\end{lstlisting}
+\begin{figure}[H]
+    \begin{center}
+        \includegraphics[width=14cm]{figures/addripple4.png}
+        \caption{4-bit リップルキャリアアダー}
+    \end{center}
+\end{figure}
+256通りすべてを網羅した。入力と出力A,B,Sは16進法で表されており、また計算全体としてキャリーが発生する場合はCがと1となっており、これがオーバーフローの検出として機能していることがわかる。
+\subsubsection{4-bit アダーの設計}
+フルアダーの組み合わせとしてではなく、1つの回路として4-bitの加算器を作成する。
+\begin{lstlisting}[caption=4-bit アダー,language=verilog]
+`timescale 1ns / 1ps
+module Add4(a,b,s,carry); 
+    input [3:0]a,b;
+    output [3:0]s;
+    output carry;
+    assign {carry, s} = a + b;
+endmodule    
+\end{lstlisting}
+4-bitリップルキャリアアダーに比べ、とても簡潔に表現できている。テストベンチは4-bit リップルキャリアアダーと同じものを用いた。
+\begin{figure}[H]
+    \begin{center}
+        \includegraphics[width=14cm]{figures/addripple4.png}
+        \caption{フルアダー回路の波形}
+    \end{center}
+\end{figure}
+結果、同じテストベンチ4-bitリップルキャリアアダーと同一の結果が得られた。
+\end{comment}
+\subsection{3日目}
+\subsubsection{動作の違いの調査}
+以下の回路は入力が2つのwire、出力が2つのwireの回路である。
+\begin{lstlisting}[caption=*****,language=verilog]
+`timescale 1ns / 1ps
+module example (
+    input wire inA,
+    input wire clk,
+    output wire out1,
+    output wire out2
+);
+    reg out1_reg, out2_reg;
+    always @(posedge clk) begin
+        out1_reg <= inA;
+    end
+    always @(*) begin
+        out2_reg <= inA;
+    end
+    assign out1 = out1_reg;
+    assign out2 = out2_reg;
+endmodule
+\end{lstlisting}
+ソースコードを調べると、posedge内でout1regを決めていることがわかるため、フリップフロップはout1であると予想できる。これを確かめるテストベンチを作成した。40msごとに入力を切り替えている。
+\begin{lstlisting}[caption=*****,language=verilog]
+module testbench_example;
+  wire	o1,o2;
+  reg clk;
+  reg	a;
+  always begin
+        clk = 1'b1;
+        #50 clk = 1'b0;
+        #50;
+  end
+  integer i = 0;
+  initial begin
+	a <= 0;
+	for (i = 0; i < 40; i = i+1) begin
+	   a <= i%2;
+	   #28;
+	end
+	repeat(2) @(posedge clk);
+	$finish;
+  end
+  example example0( a,clk,o1,o2 );
+endmodule
+\end{lstlisting}
+\begin{figure}[H]
+    \begin{center}
+        \includegraphics[width=15cm]{figures/example.png}
+        \caption{example回路の波形}
+    \end{center}
+\end{figure}
+実際、out1がフリップフロップ回路であることが確認できた。
+\subsubsection{基本的な順序回路の設計}
+\begin{figure}[H]
+    \begin{center}
+        \includegraphics[width=10cm]{figures/junjo.png}
+        \caption{順序回路}
+    \end{center}
+\end{figure}
+
 \section{参考文献}
 『title』\url{<url>} 2021年n月m日アクセス
 \end{document}
