@@ -20,6 +20,8 @@
 %Command ---–--------------------
 \renewcommand{\figurename}{図}
 \renewcommand{\baselinestretch}{1.1}
+\renewcommand\lstlistingname{ソースコード}
+\renewcommand\lstlistlistingname{ソースコード}
 \lstset{
     numbers=left,
     basicstyle={\ttfamily},
@@ -31,13 +33,16 @@
     frame={tb},
     breaklines=true,
     columns=[l]{fullflexible},
-    %numbers=left,
     xrightmargin=0\zw,
     xleftmargin=3\zw,
     numberstyle={\scriptsize},
     stepnumber=1,
-    numbersep=1,
-    lineskip=-0.5ex
+    %numbersep=1,
+    lineskip=-0.5ex,
+    keywordstyle=\color[HTML]{e10021},
+    commentstyle=\color{gray},
+    emph=CascadeObjectDetector,
+    emphstyle=\color{blue}
 }
 %Command ------------------------
 %Title   ------------------------
@@ -49,15 +54,142 @@
 \begin{document}
 
 \maketitle
+\section{方法}
+Xilinx Vivadoを用いてHDLシミュレーションを実行した.
 \section{考察課題}
 \subsection{1日目}
 \subsubsection{AND回路の設計}
 
-%ここまでソースコードの表示に関する設定
-\begin{lstlisting}[caption=hoge,label=fuga]
-asdfasdf
+入力は2つのwire, 出力は1つのwireである. ２つの入力の論理積を出力する。
+\begin{lstlisting}[caption=AND回路デザイン,language=verilog]
+`timescale 1ns / 1ps
+module and_gate (
+    input wire inA,
+    input wire inB,
+    output wire out
+);
+    assign out = inA & inB;
+endmodule
+\end{lstlisting}
+2入力の全部で4通りがある。テストベンチで100nsごとに入力を変化させた。
+\begin{lstlisting}[caption=AND回路テストベンチ,language=verilog]
+    module testbench;
+    // parameter
+    parameter CYCLE = 1000; // clock cycle
+    parameter HALF_CYCLE = 500; // half cycle
+    parameter DLY = 500; // delay
+    // wire/reg
+    reg clk;
+    reg inA, inB;
+    wire out_and_gate;
+    // DUT module
+    and_gate and_gate_0 (
+        .inA(inA),
+        .inB(inB),
+        .out(out_and_gate)
+    );
+    // clock generator
+    always begin
+        clk = 1'b1;
+        #(HALF_CYCLE) clk = 1'b0;
+        #(HALF_CYCLE);
+    end
+    // test scenario
+    initial begin
+        // initialize
+        inA = 1'b0; inB = 1'b0; 
+        // for and_gate
+        inA = 1'b0; inB = 1'b0;
+        #100 $display("inA=%b inB=%b out=%b", inA, inB, out_and_gate);
+        inA = 1'b1; inB = 1'b0;
+        #100 $display("inA=%b inB=%b out=%b", inA, inB, out_and_gate);  
+        inA = 1'b0; inB = 1'b1;
+        #100 $display("inA=%b inB=%b out=%b", inA, inB, out_and_gate);  
+        inA = 1'b1; inB = 1'b1;
+        #100 $display("inA=%b inB=%b out=%b", inA, inB, out_and_gate);
+
+        repeat(10) @(posedge clk); // repeat 10 times
+        $finish;
+    end
+endmodule
 \end{lstlisting}
 
+\begin{figure}[H]
+    \begin{center}
+        \includegraphics[width=14cm]{figures/and.png}
+        \caption{AND回路の波形}
+    \end{center}
+\end{figure}
+inA, inBの値が(0,0),(1,0),(0,1),(1,1)と変化するにつれ出力が変化していることがわかる。outの値が1となっているのはinAとinBが1のときのみであり、論理積が表現できていることがわかる。
+
+\subsubsection{NAND回路の設計}
+入力は2つのwire, 出力は1つのwireである. 2つの入力をA,Bとすると、$\overline{A\dot B}$を出力する。
+
+\begin{lstlisting}[caption=NANDデザイン,language=verilog]
+`timescale 1ns / 1ps
+module nand_gate (
+    input wire inA,
+    input wire inB,
+    output wire out
+);
+    assign out = ~(inA & inB);
+endmodule
+\end{lstlisting}
+テストベンチはAND回路のときと同じものを用いた。
+
+\begin{figure}[H]
+    \begin{center}
+        \includegraphics[width=14cm]{figures/nand.png}
+        \caption{NAND回路の波形}
+    \end{center}
+\end{figure}
+inA, inBの値を(0,0),(1,0),(0,1),(1,1)と変化するにつれ出力が変化していることがわかる。outの値は(0,0),(1,0),(0,1)のときに1、(1,1)のときに0となっているが、これは$\overline{A\dot B}$をこの回路が正しく表現できていることがわかる。
+
+\subsubsection{XOR回路の設計}
+入力は２つのwire, 出力は1つのwireである。2つの入力をA,Bとすると、$A \oplus B$を出力する。
+\begin{lstlisting}[caption=XORデザイン, language=verilog]
+`timescale 1ns / 1ps
+module xor_gate (
+    input wire inA,
+    input wire inB,
+    output wire out
+);
+    assign out = inA ^ inB;
+endmodule
+\end{lstlisting}
+テストベンチはAND回路のときと同じものを用いた。
+\begin{figure}[H]
+    \begin{center}
+        \includegraphics[width=14cm]{figures/xor.png}
+        \caption{XOR回路の波形}
+    \end{center}
+\end{figure}
+inA, inBの値を(0,0),(1,0),(0,1),(1,1)と変化するにつれ出力が変化していることがわかる。outの値はinA,inBが(1,0),(0,1)のときに1となっており、$A \oplus B$が表現できていることがわかる。
+\subsection{2日目}
+\subsubsection{フリップフロップ回路の設計}
+\tikzset{sr-ff/.style={flipflop, flipflop def={
+    t1=D,t3 = {\texttt{CLK}}, t6=Q, c3=1, td=rst}},
+}
+以下のフリップフロップ回路は、出力を反転して入力に戻す。
+\begin{figure}[H]
+    \begin{center}
+        \begin{circuitikz}[american currents]
+            \ctikzset{american inductors}
+            \draw (0,0)
+            node[sr-ff](FF){} (FF.up)
+            (FF.pin 1) -- ++(-0.5, 0)
+            to[short] ++(0, 2)
+            to[short] ++(1,0) node[not port, anchor = out, rotate = 180](not1){}
+            (FF.pin 6) -- ++(0.5, 0)
+            to[short] ++(0, 2)
+            to (not1.in) -- ++(0.5,0);
+        \end{circuitikz}
+        \caption{FF回路}
+    \end{center}
+\end{figure}
+このFF回路を作成する。
+\begin{lstlisting}[caption=*****,language=verilog]
+\end{lstlisting}
 
 \section{参考文献}
 『title』\url{<url>} 2021年n月m日アクセス
