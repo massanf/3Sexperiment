@@ -268,7 +268,7 @@ endmodule
         \begin{circuitikz}[american currents]
             \ctikzset{american inductors}
             \draw (0,0)
-            node[sr-ff2](FF){} (FF.up);
+            node[sr-ff2](FF){Latch} (FF.up);
         \end{circuitikz}
         \caption{ラッチ回路}
     \end{center}
@@ -341,8 +341,95 @@ endmodule
 
 \subsection{2日目}
 \subsubsection{ハーフアダーの設計}
+ハーフアダーは1bitの加算を桁上げまで含めて行う。
+\begin{figure}[H]
+    \begin{center}
+        \begin{circuitikz}[american currents]
+            \tikzset{halfadder/.style={draw, thick, minimum height=1.5cm, minimum width=2cm, rounded corners = 0.3cm}}
+            \node[halfadder] (A) at (0,0) {};
+            \draw ($(A.north west)!.5!(A.west)$) to[short,l_=A,-o] ++(-1,0)
+            ($(A.south west)!.5!(A.west)$) to[short,l_=B,-o] ++(-1,0)
+            ($(A.north east)!.5!(A.east)$) to[short,l=S,-o] ++(1,0)
+            ($(A.south east)!.5!(A.east)$) to[short,l=C,-o] ++(1,0);
+        \end{circuitikz}
+        \caption{ハーフアダー}
+    \end{center}
+\end{figure}
+入力は2つのwireであり、出力は2つのwireである。入力をA,Bとすると$S=A\oplus B$、$C=A\dot B$を出力する。前日に作成したAND回路やXOR回路も使用している。
+\begin{lstlisting}[caption=ハーフアダーデザイン,language=verilog]
+`timescale 1ns / 1ps
+module HalfAdder(
+    input wire A,
+    input wire B,
+    output wire S,
+    output wire C
+    );
+    xor_gate U0 (.inA(A), .inB(B), .out(S));
+    and_gate U1 (.inA(A), .inB(B), .out(C));    
+endmodule
+\end{lstlisting}
+4通りの2入力を入力し、出力を見る。
+\begin{lstlisting}[caption=ハーフアダーテストベンチ,language=verilog]
+    module HalfAddertestbench;
+    // parameter
+    parameter CYCLE = 1000; // clock cycle
+    parameter HALF_CYCLE = 500; // half cycle
+    parameter DLY = 500; // delay
+    // wire/reg
+    reg clk;
+    reg  A,B;
+    wire C,S;
+    // DUT module
+    HalfAdder  HalfAdder0(
+        .A(A),
+        .B(B),
+        .C(C),
+        .S(S)
+    );    
+    // clock generator
+    always begin
+        clk = 1'b1;
+        #(HALF_CYCLE) clk = 1'b0;
+        #(HALF_CYCLE);
+    end
+    // test scenario
+    initial begin
+        // for and_gate
+        A = 1'b0; B = 1'b0;
+        #100 $display("A=%b B=%b C=%b S=%b", A, B, C, S);
+        A = 1'b1; B = 1'b0;
+        #100 $display("A=%b B=%b C=%b S=%b", A, B, C, S); 
+        A = 1'b0; B = 1'b1;
+        #100 $display("A=%b B=%b C=%b S=%b", A, B, C, S);  
+        A = 1'b1; B = 1'b1;
+        #100 $display("A=%b B=%b C=%b S=%b", A, B, C, S);
+        repeat(10) @(posedge clk); // repeat 10 times
+        $finish;
+    end
+endmodule
+\end{lstlisting}
+\begin{figure}[H]
+    \begin{center}
+        \includegraphics[width=8cm]{figures/halfadder.png}
+        \caption{ハーフアダー回路の波形}
+    \end{center}
+\end{figure}
+図から値の名前が消えてしまっているが、上から順にclk、A, B, C, Sである。実際に、$C=A\oplus B$、$S=A\dot B$を表現することができていることがわかる。
 
-
+\subsubsection{フルアダーの設計}
+\begin{figure}[H]
+    \begin{center}
+        \begin{circuitikz}[american currents]
+            \tikzset{halfadder/.style={draw, thick, minimum height=1.5cm, minimum width=2cm, rounded corners = 0.3cm}}
+            \node[halfadder] (A) at (0,0) {};
+            \draw ($(A.north west)!.5!(A.west)$) to[short,l_=A,-o] ++(-1,0)
+            ($(A.south west)!.5!(A.west)$) to[short,l_=B,-o] ++(-1,0)
+            ($(A.north east)!.5!(A.east)$) to[short,l=S,-o] ++(1,0)
+            ($(A.south east)!.5!(A.east)$) to[short,l=C,-o] ++(1,0);
+        \end{circuitikz}
+        \caption{ハーフアダー}
+    \end{center}
+\end{figure}
 \section{参考文献}
 『title』\url{<url>} 2021年n月m日アクセス
 \end{document}
