@@ -1,6 +1,7 @@
 \documentclass{ltjsarticle}
 \usepackage{luatexja}
 %Packages -----------------------
+\usepackage{tikz}
 \usepackage{listings}
 \usepackage[euler]{textgreek}
 \usepackage{enumitem}
@@ -54,7 +55,7 @@
 \begin{document}
 
 \maketitle
-\begin{comment}
+
 \section{方法}
 Xilinx Vivadoを用いてHDLシミュレーションを実行した.
 \section{考察課題}
@@ -641,7 +642,6 @@ endmodule
     \end{center}
 \end{figure}
 結果、同じテストベンチ4-bitリップルキャリアアダーと同一の結果が得られた。
-\end{comment}
 \subsection{3日目}
 \subsubsection{動作の違いの調査}
 以下の回路は入力が2つのwire、出力が2つのwireの回路である。
@@ -696,13 +696,327 @@ endmodule
 \end{figure}
 実際、out1がフリップフロップ回路であることが確認できた。
 \subsubsection{基本的な順序回路の設計}
+以下のような挙動を示す回路を設計する。つまり、出力の初期値は0であり、clkが立ち上がりの瞬間にSTARTが1であれば1を1クロック分出力、その後3クロックごとに1クロック分だけ出力を1とするというものである。また、clk立ち上げ時にstartが1であればそれまでの挙動に考えなくその時点で出力を1とし、また3クロックごとに出力を1とする。
 \begin{figure}[H]
     \begin{center}
         \includegraphics[width=10cm]{figures/junjo.png}
         \caption{順序回路}
     \end{center}
 \end{figure}
-
+状態遷移図は以下のようになる。
+\begin{center}
+    \begin{tikzpicture}[scale=0.2]
+    \tikzstyle{every node}+=[inner sep=0pt]
+    \draw [black] (17.5,-13.6) circle (3);
+    \draw (17.5,-13.6) node {$init$};
+    \draw [black] (29.2,-22.1) circle (3);
+    \draw (29.2,-22.1) node {$S0$};
+    \draw [black] (50.1,-22.1) circle (3);
+    \draw (50.1,-22.1) node {$S1$};
+    \draw [black] (50.1,-41.2) circle (3);
+    \draw (50.1,-41.2) node {$S2$};
+    \draw [black] (29.2,-41.2) circle (3);
+    \draw (29.2,-41.2) node {$S3$};
+    \draw [black] (32.025,-21.095) arc (106.40005:73.59995:27.006);
+    \fill [black] (47.27,-21.1) -- (46.65,-20.39) -- (46.37,-21.35);
+    \draw (39.65,-19.5) node [above] {$0$};
+    \draw [black] (50.1,-25.1) -- (50.1,-38.2);
+    \fill [black] (50.1,-38.2) -- (50.6,-37.4) -- (49.6,-37.4);
+    \draw (49.6,-31.65) node [left] {$0$};
+    \draw [black] (47.1,-41.2) -- (32.2,-41.2);
+    \fill [black] (32.2,-41.2) -- (33,-41.7) -- (33,-40.7);
+    \draw (39.65,-40.7) node [above] {$0$};
+    \draw [black] (29.2,-38.2) -- (29.2,-25.1);
+    \fill [black] (29.2,-25.1) -- (28.7,-25.9) -- (29.7,-25.9);
+    \draw (29.7,-31.65) node [right] {$0,\mbox{ }1$};
+    \draw [black] (47.229,-22.967) arc (-75.95396:-104.04604:31.228);
+    \fill [black] (32.07,-22.97) -- (32.73,-23.65) -- (32.97,-22.68);
+    \draw (39.65,-24.4) node [below] {$1$};
+    \draw [black] (47.89,-39.18) -- (31.41,-24.12);
+    \fill [black] (31.41,-24.12) -- (31.67,-25.03) -- (32.34,-24.29);
+    \draw (40.66,-31.16) node [above] {$1$};
+    \draw [black] (28.268,-19.261) arc (225.90428:-62.09572:2.25);
+    \draw (30.49,-14.82) node [above] {$1$};
+    \fill [black] (30.89,-19.63) -- (31.8,-19.41) -- (31.08,-18.71);
+    \draw [black] (16.177,-10.92) arc (234:-54:2.25);
+    \draw (17.5,-6.35) node [above] {$0$};
+    \fill [black] (18.82,-10.92) -- (19.7,-10.57) -- (18.89,-9.98);
+    \draw [black] (19.93,-15.36) -- (26.77,-20.34);
+    \fill [black] (26.77,-20.34) -- (26.42,-19.46) -- (25.83,-20.27);
+    \draw (22.35,-18.35) node [below] {$1$};
+    \end{tikzpicture}
+\end{center}
+clk立ち上がり時のSTARTの値によって状態が遷移し、状態がS0のときのみ1を出力する。\\
+入力がclkとstartの2つのwire、出力が1つの回路を作成した。posedgeによりclkの立ち上がりを検知、iによりクロックの立ち上がり回数を記録し、iが3になったら1を出力すると同時にiを0とする。また、clk立ち上がり時にSTARTが1のときは1を出力すると同時にiを0とする。また、最初のSTARTの信号までは0を出力するため、これまでのSTARTの有無を記録している。
+\begin{lstlisting}[caption=順序回路デザイン,language=verilog]
+`timescale 1ns / 1ps
+module sequence(
+        input wire start,
+        input wire clk,
+        output wire out
+    );
+    reg [1:0]i;
+    reg out_reg;
+    reg start_reg;
+    initial begin
+        i <= 0;
+        start_reg <= 0;
+        out_reg <= 0;
+    end
+    always @(posedge clk) begin
+        if (start == 1 || start_reg == 1) begin
+            start_reg <= 1;
+            if (start == 1 || i == 3) begin 
+                out_reg <= 1;
+                i <= 0;
+            end else begin
+                out_reg <= 0;
+                i <= i+1;
+            end
+        end
+    end
+    assign out = out_reg;
+endmodule
+\end{lstlisting}
+テストベンチを作成し、START信号が送られると3クロックごとに出力が0となっていることが確認できれば良い。32ns毎に1/7の確率でランダムにclkが1となるようにし、波形を観測した。
+\begin{lstlisting}[caption=順序回路テストベンチ,language=verilog]
+`timescale 1ns / 1ps
+module test_sequence_rst;
+  wire	out;
+  reg rst;
+  reg clk;
+  reg	in;
+  always begin
+        clk = 1'b1;
+        #50 clk = 1'b0;
+        #50;
+  end
+  integer i = 0;
+  initial begin
+	in <= 0;
+	rst <= 0;
+	#50 in<=1;
+	#100 in<=0;
+	for (i = 0; i < 200; i = i+1) begin
+	   if ($random%4 == 0) begin
+	       rst <= 1;
+	   end else rst <= 0;
+	   #10;
+	   rst <= 0;
+	   #90;
+	end
+	repeat(2) @(posedge clk);
+	$finish;
+  end
+  sequence_rst sequence_rst0( in,clk,rst,out );
+endmodule
+\end{lstlisting}
+上で述べた設計通りに動作していることが確認できた。
+\subsubsection{非同期リセット機能の追加}
+上記の回路では、クロックの立ち上がり時にSTART信号が1となっていないと出力がリセットされない。つまり、START信号が1になったとしても、次のclkの立ち上がりまでに0に戻っていれば検知されない。そこで、STARTのwireとは別に、そのような信号を送ってもリセットができるようなRST信号を加えた回路が以下である。
+\begin{lstlisting}[caption=rst機能付き順序回路デザイン,language=verilog]
+`timescale 1ns / 1ps
+module test_sequence_rst;
+  wire	out_sync;
+  wire out_async;
+  reg start;
+  reg rst;
+  reg clk;
+  reg in;
+  always begin
+        clk = 1'b1;
+        #50 clk = 1'b0;
+        #50;
+  end
+  integer i = 0;
+  initial begin
+	in <= 0;
+	rst <= 0;
+	start <= 0;
+	#50 in<=1;start<=1;rst<=1;
+	#95 in<=0;start<=0;rst<=0;
+	for (i = 0; i < 200; i = i+1) begin
+	   if ($random%8 == 0) begin
+	       rst = 1; start = 1;
+	   end else begin rst = 0; start=0; end
+	   #10;
+	   rst = 0; start = 0;
+	   #40;
+	end
+	repeat(2) @(posedge clk);
+	$finish;
+  end
+  sequence_rst sequence_rst0( in,clk,rst,out_async );
+  sequence sequence0(start,clk,out_sync);
+endmodule
+\end{lstlisting}
+2節のテストベンチに加え、rst信号を適当なタイミングで送るようなテストベンチを組み、挙動を確認する。
+\begin{lstlisting}[caption=リセット付き順序回路デザイン,language=verilog]
+'timescale 1ns / 1ps
+module sequence_rst(
+        input wire start,
+        input wire clk,
+        input wire rst,
+        output wire out
+    );
+    reg [1:0]i;
+    reg out_reg;
+    reg rst_reg;
+    reg start_reg;
+    initial begin
+        i <= 0;
+        start_reg <= 0;
+        rst_reg <= 0;
+        out_reg <= 0;
+    end
+    always @(posedge clk) begin
+        if(start == 1 || start_reg == 1 || (rst_reg == 1 && start_reg == 1)) begin
+            start_reg <= 1;
+            if(start == 1 || rst_reg == 1 || i == 3) begin
+                out_reg <= 1;
+                i <= 0;
+                rst_reg <= 0;
+            end else begin
+                out_reg <= 0;
+                i <= i+1;
+            end
+        end
+    end
+    always @(posedge rst) begin
+        rst_reg <= 1;
+    end
+    assign out = out_reg;
+endmodule
+\end{lstlisting}
+\begin{lstlisting}[caption=リセット付き順序回路テストベンチ,language=verilog]
+'timescale 1ns / 1psmodule test_sequence_rst2;
+module test_sequence_rst2;
+    wire out_sync;
+    wire out_async;
+    reg start;
+    reg rst;
+    reg clk;
+    reg in;
+    always begin
+        clk = 1'b1;
+        #50 clk = 1'b0;
+        #50;
+    end
+    integer i = 0;
+    initial begin
+        in <= 0;
+        rst <= 0;
+        start <= 0;
+        #50 in <= 1; start <= 1; rst <= 1;
+        #95 in = 0; start <= 0; rst <= 0;
+        for(i = 0; i < 200; i = i + 1) begin
+            if($random%7 == 0) begin
+                rst = 1; start = 1;
+            end else begin rst = 0; start = 0; end
+            #10;
+            rst = 0; start = 0;
+            #40;
+        end
+        repeat(2) @(posedge clk);
+        $finish;
+    end
+    sequence_rst sequence_rst0(in,clk,rst,out_async);
+    sequence sequence0(start,clk,out_sync);
+endmodule
+\end{lstlisting}
+設計通りに、STARTはclkが立ち上がるときに1であればリセット、RSTは一瞬でも1となればリセットされるというように、設計通りに回路が動いていることがわかる。
+\subsection{4日目}
+\subsubsection{メモリ読み出し回路の設計とシミュレーション}
+クロックを用い、クロックの立ち上がりごとにmem.hexファイルに保存された16進法の1桁の数字を読み出す。アドレスは0から始め、clkの立ち上がりごとに1増やしている。なお、次の節の課題において用いる機能を考え、メモリ読み出し時に次の数字を取得するか、次の次の数字を取得するかを選択できるようにしている。
+\begin{lstlisting}[caption=メモリ読み出し回路デザイン,language=verilog]
+`timescale 1ns / 1ps
+module read_4 ( 
+    input wire clk,
+    output wire [3:0] out_data
+);
+    reg [3:0] mem [0:31];
+    reg [3:0] mem_out;
+    reg [4:0] addr_reg;
+    initial begin
+        $readmemh("C:/Users/tromb/OneDrive/Desktop/files/Day4/mem.hex", mem);
+        addr_reg = 0;
+    end
+    always @(posedge clk) begin
+        mem_out <= mem[addr_reg];
+        addr_reg = addr_reg + 1;
+          // synchronous read
+    end
+    assign out_data = mem_out;  
+endmodule
+\end{lstlisting}
+\begin{lstlisting}[caption=メモリ読み出し回路テストベンチ,language=verilog]
+`timescale 1ns / 1ps
+module testbench;
+	reg clk;
+	wire [3:0] out;
+	always begin
+		clk = 1'b1;
+		#50 clk = 1'b0;
+		#50;
+	end
+	read_4 read_a_digit(clk,out);
+	always @(posedge clk) begin
+	   if (out !== 4'bx)
+	      $display("%x", out);
+end
+endmodule
+\end{lstlisting}
+実際に、mem.hexに保存されている数字が1クロックごとに読み出されていることがわかる。
+\subsubsection{メモリ比較回路の設計とシミュレーション}
+上記の読み出し回路を編集し、1クロックごとに次の数字と次の次の数字を読み出し、上で作成した4-bitリップルキャリアアダーを用いて2つの数字の和とキャリーの有無を計算する。オーバーフローがある場合はoutofが1となる。また、似たコードを用いてref.hexを1クロックごとに同時に読み出し、計算結果と一致するかどうかを調べ出力する。また、間違いが会った場合は標準出力にそのアドレスが表示される。
+\begin{lstlisting}[caption=メモリ比較回路デザイン,language=verilog]
+`timescale 1ns / 1ps
+module read_ref ( 
+    input wire clk,
+    output wire [3:0] out_data,
+    output wire [4:0] out_addr
+);
+    reg [3:0] mem [0:31];
+    reg [3:0] mem_out;
+    reg [4:0] addr_reg;
+    initial begin
+        $readmemh("C:/Users/tromb/OneDrive/Desktop/files/Day4/ref.hex", mem);
+        addr_reg = 0;
+    end
+    always @(posedge clk) begin
+        mem_out <= mem[addr_reg];
+        addr_reg = addr_reg + 1;
+          // synchronous read
+    end
+    assign out_data = mem_out;
+    assign out_addr = addr_reg;
+endmodule
+\end{lstlisting}
+\begin{lstlisting}[caption=メモリ比較回路テストベンチ,language=verilog]
+`timescale 1ns / 1ps
+module testbench;
+	reg clk;
+	wire [3:0] out;
+	wire out_of;
+	wire [3:0] out_ref;
+	wire [4:0] out_addr;
+	always begin
+		clk = 1'b1;
+		#50 clk = 1'b0;
+		#50;
+	end
+	initial begin  
+	end
+	add2digits add21(clk,out,out_of);
+	read_ref readit(clk,out_ref,out_addr);
+	always @(posedge clk) begin
+	   if (out !== 4'bx)
+	   	  if (out !== out_ref)
+	        $display("%x", out_addr);
+end
+endmodule
+\end{lstlisting}
+計算結果と、読みだした結果と、それらの一致不一致が表現されていることがわかる。
 \section{参考文献}
 『title』\url{<url>} 2021年n月m日アクセス
 \end{document}
