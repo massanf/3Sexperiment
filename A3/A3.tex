@@ -165,7 +165,6 @@ endmodule
     \end{center}
 \end{figure}
 inA, inBの値を(0,0),(1,0),(0,1),(1,1)と変化するにつれ出力が変化していることがわかる。outの値はinA,inBが(1,0),(0,1)のときに1となっており、$A \oplus B$が表現できていることがわかる。
-\subsection{2日目}
 \subsubsection{フリップフロップ回路の設計}
 \tikzset{sr-ff/.style={flipflop, flipflop def={
     t1=D,t3 = {\texttt{CLK}}, t6=Q, c3=1, td=rst}},
@@ -187,9 +186,162 @@ inA, inBの値を(0,0),(1,0),(0,1),(1,1)と変化するにつれ出力が変化�
         \caption{FF回路}
     \end{center}
 \end{figure}
-このFF回路を作成する。
-\begin{lstlisting}[caption=*****,language=verilog]
+このFF回路を作成する。入力はclkとrstの2つのwireであり、出力はoutのreg一つである。clkの立ち上がりで出力値がそれまでの出力値の反転となる。ただし、clkの立ち上がり時にrstが1であればoutの値は0のままとなる。また、rstの立ち上がり時にも出力値が0となる。なお、regを用いてoutの値を保持しておくことで、Dの入力のwireが不要となる。
+\begin{lstlisting}[caption=インバータ付きFF回路デザイン,language=verilog]
+`timescale 1ns / 1ps
+module flipflop (
+    input wire clk,
+    input wire rst,
+    output reg q
+);
+initial begin
+    q = 1;
+end
+always @(posedge clk or posedge rst)
+    if (rst) begin
+        q <= 1'b0;
+    end else begin
+        q <= ~q;
+    end
+endmodule
 \end{lstlisting}
+clkは500msごとに値が1と0で切り替わる。適当なタイミングでrstの値を1とし、rstが想定通りに機能していることを確認する。
+\begin{lstlisting}[caption=インバータ付きFF回路テストベンチ,language=verilog]
+    module testbench_flipflop_not;
+    // parameter
+    parameter CYCLE = 1000; // clock cycle
+    parameter HALF_CYCLE = 500; // half cycle
+    parameter DLY = 500; // delay
+    // wire/reg
+    reg clk;
+    reg rst;
+    wire out;
+    // DUT module
+    flipflop_not flipflop_not0(
+        .clk(clk),
+        .rst(rst),
+        .q(out)
+    );
+    // clock generator
+    always begin
+        clk = 1'b1;
+        #(HALF_CYCLE) clk = 1'b0;
+        #(HALF_CYCLE);
+    end
+    // test scenario
+    initial begin   
+        rst = 1'b0;
+        #2200 $display("rst=%b out=%b", rst, out);
+        rst = 1'b1;
+        #400 $display("rst=%b out=%b", rst, out);  
+        rst = 1'b0;
+        #600 $display("rst=%b out=%b", rst, out);
+        rst = 1'b1;
+        #400 $display("rst=%b out=%b", rst, out);
+        rst = 1'b0;
+        #1200 $display("rst=%b out=%b", rst, out);
+        rst = 1'b1;
+        #400 $display("rst=%b out=%b", rst, out);
+        rst = 1'b0;
+        #1200 $display("rst=%b out=%b", rst, out);
+        repeat(10) @(posedge clk); // repeat 10 times
+        $finish;
+    end
+endmodule
+\end{lstlisting}
+\begin{figure}[H]
+    \begin{center}
+        \includegraphics[width=14cm]{figures/flipflop_not.png}
+        \caption{インバータ付きフリップフロップ回路の波形}
+    \end{center}
+\end{figure}
+波形を観察すると、設計通り、clkの立ち上がりでoutの値が反転しており、またrstの立ち上がりでoutの値が0となっていることがわかる。
+
+
+\subsubsection{ラッチ回路の設計}
+\tikzset{sr-ff2/.style={flipflop, flipflop def={
+    t1=D,t3 = {\texttt{CLK}}, t6=Q, c3=1}},
+}
+以下のようなラッチ回路を作成する。
+\begin{figure}[H]
+    \begin{center}
+        \begin{circuitikz}[american currents]
+            \ctikzset{american inductors}
+            \draw (0,0)
+            node[sr-ff2](FF){} (FF.up);
+        \end{circuitikz}
+        \caption{ラッチ回路}
+    \end{center}
+\end{figure}
+入力はclkとDのwireの2つ、出力は1つのregである。クロックが1であれば出力の値がDの値となり、クロックが0になってもその直前の出力値を保持する。
+\begin{lstlisting}[caption=ラッチ回路デザイン,language=verilog]
+`timescale 1ns / 1ps
+module latch (
+    input wire clk,
+    input wire D,
+    output reg Q
+);
+    always @* begin
+        if (clk==1'b1)
+        Q = D;
+    end
+endmodule
+\end{lstlisting}
+clkは250msごとに切り替わる。Dを適当なタイミングで切り替え、out値の挙動を観察する。
+\begin{lstlisting}[caption=*****,language=verilog]
+module testbench_flipflop_not;
+    // parameter
+    parameter CYCLE = 1000; // clock cycle
+    parameter HALF_CYCLE = 500; // half cycle
+    parameter DLY = 500; // delay
+    // wire/reg
+    reg clk;
+    reg rst;
+    wire out;
+    // DUT module
+    flipflop_not flipflop_not0(
+        .clk(clk),
+        .rst(rst),
+        .q(out)
+    );
+    // clock generator
+    always begin
+        clk = 1'b1;
+        #(HALF_CYCLE) clk = 1'b0;
+        #(HALF_CYCLE);
+    end
+    // test scenario
+    initial begin
+        rst = 1'b0;
+        #2200 $display("rst=%b out=%b", rst, out);
+        rst = 1'b1;
+        #400 $display("rst=%b out=%b", rst, out);  
+        rst = 1'b0;
+        #600 $display("rst=%b out=%b", rst, out);
+        rst = 1'b1;
+        #400 $display("rst=%b out=%b", rst, out);
+        rst = 1'b0;
+        #1200 $display("rst=%b out=%b", rst, out);
+        rst = 1'b1;
+        #400 $display("rst=%b out=%b", rst, out);
+        rst = 1'b0;
+        #1200 $display("rst=%b out=%b", rst, out);
+        repeat(10) @(posedge clk); // repeat 10 times
+        $finish;
+    end
+endmodule
+\end{lstlisting}
+\begin{figure}[H]
+    \begin{center}
+        \includegraphics[width=15cm]{figures/flipflop_latch.png}
+        \caption{ラッチ回路の波形}
+    \end{center}
+\end{figure}
+図ではinAとなっているものが入力Dである。設計通り、clkの立ち上がりのときのAの値が出力として保持されていることがわかる。
+
+\subsection{2日目}
+\subsubsection{ハーフアダーの設計}
+
 
 \section{参考文献}
 『title』\url{<url>} 2021年n月m日アクセス
