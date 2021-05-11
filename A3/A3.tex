@@ -48,7 +48,7 @@
 %Command ------------------------
 %Title   ------------------------
 \begin{titlepage}
-    \title{実験レポートA1}
+    \title{実験レポートA3}
     \author{東京大学工学部電気電子工学科 03210517\\藤田 誠之\\~\\ 共同実験者  河野亮介・梶谷優貴・パリナヨックサタユ}
     \date{May 6, 2021}
 \end{titlepage}
@@ -65,7 +65,7 @@ Xilinx Vivadoを用いてHDLシミュレーションを実行した.
 \subsection{1日目}
 \subsubsection{AND回路の設計}
 
-入力は2つのwire, 出力は1つのwireである. ２つの入力の論理積を出力する。
+入力は2つのwire, 出力は1つのwireである. ２つの入力の論理積を出力する. 
 \begin{lstlisting}[caption=AND回路デザイン,language=verilog]
 `timescale 1ns / 1ps
 module and_gate (
@@ -76,7 +76,7 @@ module and_gate (
     assign out = inA & inB;
 endmodule
 \end{lstlisting}
-2入力の全部で4通りがある。テストベンチで100nsごとに入力を変化させた。
+2入力の全部で4通りがある. テストベンチで100nsごとに入力を変化させた. 
 \begin{lstlisting}[caption=AND回路テストベンチ,language=verilog]
     module testbench;
     // parameter
@@ -125,10 +125,10 @@ endmodule
         \caption{AND回路の波形}
     \end{center}
 \end{figure}
-inA, inBの値が(0,0),(1,0),(0,1),(1,1)と変化するにつれ出力が変化していることがわかる。outの値が1となっているのはinAとinBが1のときのみであり、論理積が表現できていることがわかる。
+inA, inBの値が(0,0),(1,0),(0,1),(1,1)と変化するにつれ出力が変化していることがわかる. outの値が1となっているのはinAとinBが1のときのみであり, 論理積が表現できていることがわかる. 
 
 \subsubsection{NAND回路の設計}
-入力は2つのwire, 出力は1つのwireである. 2つの入力をA,Bとすると、$\overline{A\dot B}$を出力する。
+入力は2つのwire, 出力は1つのwireである. 2つの入力をA,Bとすると, $\overline{A\dot B}$を出力する. 
 
 \begin{lstlisting}[caption=NANDデザイン,language=verilog]
 `timescale 1ns / 1ps
@@ -140,7 +140,7 @@ module nand_gate (
     assign out = ~(inA & inB);
 endmodule
 \end{lstlisting}
-テストベンチはAND回路のときと同じものを用いた。
+テストベンチはAND回路のときと同じものを用いた. 
 
 \begin{figure}[H]
     \begin{center}
@@ -148,10 +148,10 @@ endmodule
         \caption{NAND回路の波形}
     \end{center}
 \end{figure}
-inA, inBの値を(0,0),(1,0),(0,1),(1,1)と変化するにつれ出力が変化していることがわかる。outの値は(0,0),(1,0),(0,1)のときに1、(1,1)のときに0となっているが、これは$\overline{A\dot B}$をこの回路が正しく表現できていることがわかる。
+inA, inBの値を(0,0),(1,0),(0,1),(1,1)と変化するにつれ出力が変化していることがわかる. outの値は(0,0),(1,0),(0,1)のときに1, (1,1)のときに0となっているが, これは$\overline{A\dot B}$をこの回路が正しく表現できていることがわかる. 
 
 \subsubsection{XOR回路の設計}
-入力は２つのwire, 出力は1つのwireである。2つの入力をA,Bとすると、$A \oplus B$を出力する。
+入力は２つのwire, 出力は1つのwireである. 2つの入力をA,Bとすると, $A \oplus B$を出力する. 
 \begin{lstlisting}[caption=XORデザイン, language=verilog]
 `timescale 1ns / 1ps
 module xor_gate (
@@ -162,19 +162,19 @@ module xor_gate (
     assign out = inA ^ inB;
 endmodule
 \end{lstlisting}
-テストベンチはAND回路のときと同じものを用いた。
+テストベンチはAND回路のときと同じものを用いた. 
 \begin{figure}[H]
     \begin{center}
         \includegraphics[width=14cm]{figures/xor.png}
         \caption{XOR回路の波形}
     \end{center}
 \end{figure}
-inA, inBの値を(0,0),(1,0),(0,1),(1,1)と変化するにつれ出力が変化していることがわかる。outの値はinA,inBが(1,0),(0,1)のときに1となっており、$A \oplus B$が表現できていることがわかる。
+inA, inBの値を(0,0),(1,0),(0,1),(1,1)と変化するにつれ出力が変化していることがわかる. outの値はinA,inBが(1,0),(0,1)のときに1となっており, $A \oplus B$が表現できていることがわかる. 
 \subsubsection{フリップフロップ回路の設計}
 \tikzset{sr-ff/.style={flipflop, flipflop def={
     t1=D,t3 = {\texttt{CLK}}, t6=Q, c3=1, td=rst}},
 }
-以下のフリップフロップ回路は、出力を反転して入力に戻す。
+以下のフリップフロップ回路は, 出力を反転して入力に戻す. 
 \begin{figure}[H]
     \begin{center}
         \begin{circuitikz}[american currents]
@@ -191,7 +191,7 @@ inA, inBの値を(0,0),(1,0),(0,1),(1,1)と変化するにつれ出力が変化�
         \caption{FF回路}
     \end{center}
 \end{figure}
-このFF回路を作成する。入力はclkとrstの2つのwireであり、出力はoutのreg一つである。clkの立ち上がりで出力値がそれまでの出力値の反転となる。ただし、clkの立ち上がり時にrstが1であればoutの値は0のままとなる。また、rstの立ち上がり時にも出力値が0となる。なお、regを用いてoutの値を保持しておくことで、Dの入力のwireが不要となる。
+このFF回路を作成する. 入力はclkとrstの2つのwireであり, 出力はoutのreg一つである. clkの立ち上がりで出力値がそれまでの出力値の反転となる. ただし, clkの立ち上がり時にrstが1であればoutの値は0のままとなる. また, rstの立ち上がり時にも出力値が0となる. なお, regを用いてoutの値を保持しておくことで, Dの入力のwireが不要となる. 
 \begin{lstlisting}[caption=インバータ付きFF回路デザイン,language=verilog]
 `timescale 1ns / 1ps
 module flipflop (
@@ -210,7 +210,7 @@ always @(posedge clk or posedge rst)
     end
 endmodule
 \end{lstlisting}
-clkは500msごとに値が1と0で切り替わる。適当なタイミングでrstの値を1とし、rstが想定通りに機能していることを確認する。
+clkは500msごとに値が1と0で切り替わる. 適当なタイミングでrstの値を1とし, rstが想定通りに機能していることを確認する. 
 \begin{lstlisting}[caption=インバータ付きFF回路テストベンチ,language=verilog]
     module testbench_flipflop_not;
     // parameter
@@ -260,14 +260,14 @@ endmodule
         \caption{インバータ付きフリップフロップ回路の波形}
     \end{center}
 \end{figure}
-波形を観察すると、設計通り、clkの立ち上がりでoutの値が反転しており、またrstの立ち上がりでoutの値が0となっていることがわかる。
+波形を観察すると, 設計通り, clkの立ち上がりでoutの値が反転しており, またrstの立ち上がりでoutの値が0となっていることがわかる. 
 
 
 \subsubsection{ラッチ回路の設計}
 \tikzset{sr-ff2/.style={flipflop, flipflop def={
     t1=D,t3 = {\texttt{CLK}}, t6=Q, c3=1}},
 }
-以下のようなラッチ回路を作成する。
+以下のようなラッチ回路を作成する. 
 \begin{figure}[H]
     \begin{center}
         \begin{circuitikz}[american currents]
@@ -278,7 +278,7 @@ endmodule
         \caption{ラッチ回路}
     \end{center}
 \end{figure}
-入力はclkとDのwireの2つ、出力は1つのregである。クロックが1であれば出力の値がDの値となり、クロックが0になってもその直前の出力値を保持する。
+入力はclkとDのwireの2つ, 出力は1つのregである. クロックが1であれば出力の値がDの値となり, クロックが0になってもその直前の出力値を保持する. 
 \begin{lstlisting}[caption=ラッチ回路デザイン,language=verilog]
 `timescale 1ns / 1ps
 module latch (
@@ -292,7 +292,7 @@ module latch (
     end
 endmodule
 \end{lstlisting}
-clkは250msごとに切り替わる。Dを適当なタイミングで切り替え、out値の挙動を観察する。
+clkは250msごとに切り替わる. Dを適当なタイミングで切り替え, out値の挙動を観察する. 
 \begin{lstlisting}[caption=*****,language=verilog]
 module testbench_flipflop_not;
     // parameter
@@ -342,11 +342,11 @@ endmodule
         \caption{ラッチ回路の波形}
     \end{center}
 \end{figure}
-図ではinAとなっているものが入力Dである。設計通り、clkの立ち上がりのときのAの値が出力として保持されていることがわかる。
+図ではinAとなっているものが入力Dである. 設計通り, clkの立ち上がりのときのAの値が出力として保持されていることがわかる. 
 
 \subsection{2日目}
 \subsubsection{ハーフアダーの設計}
-ハーフアダーは1bitの加算を桁上げまで含めて行う。
+ハーフアダーは1bitの加算を桁上げまで含めて行う. 
 \begin{figure}[H]
     \begin{center}
         \begin{circuitikz}[american currents]
@@ -360,7 +360,7 @@ endmodule
         \caption{ハーフアダー}
     \end{center}
 \end{figure}
-入力は2つのwireであり、出力は2つのwireである。入力をA,Bとすると$S=A\oplus B$、$C=A\dot B$を出力する。前日に作成したAND回路やXOR回路も使用している。
+入力は2つのwireであり, 出力は2つのwireである. 入力をA,Bとすると$S=A\oplus B$, $C=A\dot B$を出力する. 前日に作成したAND回路やXOR回路も使用している. 
 \begin{lstlisting}[caption=ハーフアダーデザイン,language=verilog]
 `timescale 1ns / 1ps
 module HalfAdder(
@@ -373,7 +373,7 @@ module HalfAdder(
     and_gate U1 (.inA(A), .inB(B), .out(C));    
 endmodule
 \end{lstlisting}
-4通りの2入力を入力し、出力を見る。
+4通りの2入力を入力し, 出力を見る. 
 \begin{lstlisting}[caption=ハーフアダーテストベンチ,language=verilog]
     module HalfAddertestbench;
     // parameter
@@ -419,9 +419,9 @@ endmodule
         \caption{ハーフアダー回路の波形}
     \end{center}
 \end{figure}
-図から値の名前が消えてしまっているが、上から順にclk、A, B, C, Sである。実際に、$C=A\oplus B$、$S=A\dot B$を表現することができていることがわかる。
+図から値の名前が消えてしまっているが, 上から順にclk, A, B, C, Sである. 実際に, $C=A\oplus B$, $S=A\dot B$を表現することができていることがわかる. 
 \subsubsection{フルアダーの設計}
-フルアダーは、ハーフアダーに過去の繰り上げの情報を付加して計算する。
+フルアダーは, ハーフアダーに過去の繰り上げの情報を付加して計算する. 
 \begin{figure}[H]
     \begin{center}
         \begin{circuitikz}[american currents]
@@ -436,7 +436,7 @@ endmodule
         \caption{ハーフアダー}
     \end{center}
 \end{figure}
-入力は$A$、$B$、$C_{in}$の3つのwireであり、出力は$S$、$C_{in}$の2つのwireである。ハーフアダーを以下の様に2つつなげることにより、完結に表現することができる。
+入力は$A$, $B$, $C_{in}$の3つのwireであり, 出力は$S$, $C_{in}$の2つのwireである. ハーフアダーを以下の様に2つつなげることにより, 完結に表現することができる. 
 \begin{figure}[H]
     \begin{center}
         \begin{circuitikz}[american currents]
@@ -491,7 +491,7 @@ module Fulladder(
     assign CO = w2|w3;
 endmodule
 \end{lstlisting}
-$A$,$B$,$C_{in}$に関してそれぞれ0,1の8通りを表現する。
+$A$,$B$,$C_{in}$に関してそれぞれ0,1の8通りを表現する. 
 \begin{lstlisting}[caption=フルアダーテストベンチ,language=verilog]
 module FullAddertestbench;
     // parameter
@@ -546,9 +546,9 @@ endmodule
         \caption{フルアダー回路の波形}
     \end{center}
 \end{figure}
-上から$A$、$B$、$C_{in}$、$S$、$C_{out}$である。入力に合致した値が得られていることがわかる。
+上から$A$, $B$, $C_{in}$, $S$, $C_{out}$である. 入力に合致した値が得られていることがわかる. 
 \subsubsection{4-bit リップルキャリアアダーの設計}
-フルアダーを4つ並べて繋げたものである。
+フルアダーを4つ並べて繋げたものである. 
 
 \begin{figure}[H]
     \begin{center}
@@ -566,7 +566,7 @@ endmodule
         \caption{4-bit リップルキャリアアダー}
     \end{center}
 \end{figure}
-Aの初期値は0とし、4bitの16進数として表示された値をそれぞれの桁の値をそれぞれ対応するフルアダーに入力する。Dの$C_{out}$は最終的な計算結果のキャリーとなることがわかる。
+Aの初期値は0とし, 4bitの16進数として表示された値をそれぞれの桁の値をそれぞれ対応するフルアダーに入力する. Dの$C_{out}$は最終的な計算結果のキャリーとなることがわかる. 
 \begin{lstlisting}[caption=4-bit リップルキャリアアダーデザイン,language=verilog]
 `timescale 1ns / 1ps
 module Addripple4(
@@ -581,7 +581,7 @@ module Addripple4(
     Fulladder Fulladder3(.S(s[3]),.B(b[3]),.A(a[3]),.CI(w2),.CO(of));
 endmodule
 \end{lstlisting}
-AとBが4bitずつの$2^8$通りを計算するテストベンチを作成した。
+AとBが4bitずつの$2^8$通りを計算するテストベンチを作成した. 
 \begin{lstlisting}[caption=*****,language=verilog]
     module testbench_addripple4;
     // parameter
@@ -625,9 +625,9 @@ endmodule
         \caption{4-bit リップルキャリアアダー}
     \end{center}
 \end{figure}
-256通りすべてを網羅した。入力と出力A,B,Sは16進法で表されており、また計算全体としてキャリーが発生する場合はCがと1となっており、これがオーバーフローの検出として機能していることがわかる。
+256通りすべてを網羅した. 入力と出力A,B,Sは16進法で表されており, また計算全体としてキャリーが発生する場合はCがと1となっており, これがオーバーフローの検出として機能していることがわかる. 
 \subsubsection{4-bit アダーの設計}
-フルアダーの組み合わせとしてではなく、1つの回路として4-bitの加算器を作成する。
+フルアダーの組み合わせとしてではなく, 1つの回路として4-bitの加算器を作成する. 
 \begin{lstlisting}[caption=4-bit アダー,language=verilog]
 `timescale 1ns / 1ps
 module Add4(a,b,s,carry); 
@@ -637,17 +637,17 @@ module Add4(a,b,s,carry);
     assign {carry, s} = a + b;
 endmodule    
 \end{lstlisting}
-4-bitリップルキャリアアダーに比べ、とても簡潔に表現できている。テストベンチは4-bit リップルキャリアアダーと同じものを用いた。
+4-bitリップルキャリアアダーに比べ, とても簡潔に表現できている. テストベンチは4-bit リップルキャリアアダーと同じものを用いた. 
 \begin{figure}[H]
     \begin{center}
         \includegraphics[width=14cm]{figures/addripple4.png}
         \caption{フルアダー回路の波形}
     \end{center}
 \end{figure}
-結果、同じテストベンチ4-bitリップルキャリアアダーと同一の結果が得られた。
+結果, 同じテストベンチ4-bitリップルキャリアアダーと同一の結果が得られた. 
 \subsection{3日目}
 \subsubsection{動作の違いの調査}
-以下の回路は入力が2つのwire、出力が2つのwireの回路である。
+以下の回路は入力が2つのwire, 出力が2つのwireの回路である. 
 \begin{lstlisting}[caption=*****,language=verilog]
 `timescale 1ns / 1ps
 module example (
@@ -667,7 +667,7 @@ module example (
     assign out2 = out2_reg;
 endmodule
 \end{lstlisting}
-ソースコードを調べると、posedge内でout1regを決めていることがわかるため、フリップフロップはout1であると予想できる。これを確かめるテストベンチを作成した。40msごとに入力を切り替えている。
+ソースコードを調べると, posedge内でout1regを決めていることがわかるため, フリップフロップはout1であると予想できる. これを確かめるテストベンチを作成した. 40msごとに入力を切り替えている. 
 \begin{lstlisting}[caption=*****,language=verilog]
 module testbench_example;
   wire	o1,o2;
@@ -697,16 +697,16 @@ endmodule
         \caption{example回路の波形}
     \end{center}
 \end{figure}
-実際、out1がフリップフロップ回路であることが確認できた。
+実際, out1がフリップフロップ回路であることが確認できた. 
 \subsubsection{基本的な順序回路の設計}
-以下のような挙動を示す回路を設計する。つまり、出力の初期値は0であり、clkが立ち上がりの瞬間にSTARTが1であれば1を1クロック分出力、その後3クロックごとに1クロック分だけ出力を1とするというものである。また、clk立ち上げ時にstartが1であればそれまでの挙動に考えなくその時点で出力を1とし、また3クロックごとに出力を1とする。
+以下のような挙動を示す回路を設計する. つまり, 出力の初期値は0であり, clkが立ち上がりの瞬間にSTARTが1であれば1を1クロック分出力, その後3クロックごとに1クロック分だけ出力を1とするというものである. また, clk立ち上げ時にstartが1であればそれまでの挙動に考えなくその時点で出力を1とし, また3クロックごとに出力を1とする. 
 \begin{figure}[H]
     \begin{center}
         \includegraphics[width=10cm]{figures/junjo.png}
         \caption{順序回路}
     \end{center}
 \end{figure}
-状態遷移図は以下のようになる。
+状態遷移図は以下のようになる. 
 \begin{center}
     \begin{tikzpicture}[scale=0.2]
     \tikzstyle{every node}+=[inner sep=0pt]
@@ -749,8 +749,8 @@ endmodule
     \draw (22.35,-18.35) node [below] {$1$};
     \end{tikzpicture}
 \end{center}
-clk立ち上がり時のSTARTの値によって状態が遷移し、状態がS0のときのみ1を出力する。\\
-入力がclkとstartの2つのwire、出力が1つの回路を作成した。posedgeによりclkの立ち上がりを検知、iによりクロックの立ち上がり回数を記録し、iが3になったら1を出力すると同時にiを0とする。また、clk立ち上がり時にSTARTが1のときは1を出力すると同時にiを0とする。また、最初のSTARTの信号までは0を出力するため、これまでのSTARTの有無を記録している。
+clk立ち上がり時のSTARTの値によって状態が遷移し, 状態がS0のときのみ1を出力する. \\
+入力がclkとstartの2つのwire, 出力が1つの回路を作成した. posedgeによりclkの立ち上がりを検知, iによりクロックの立ち上がり回数を記録し, iが3になったら1を出力すると同時にiを0とする. また, clk立ち上がり時にSTARTが1のときは1を出力すると同時にiを0とする. また, 最初のSTARTの信号までは0を出力するため, これまでのSTARTの有無を記録している. 
 \begin{lstlisting}[caption=順序回路デザイン,language=verilog]
 `timescale 1ns / 1ps
 module sequence(
@@ -781,7 +781,7 @@ module sequence(
     assign out = out_reg;
 endmodule
 \end{lstlisting}
-テストベンチを作成し、START信号が送られると3クロックごとに出力が0となっていることが確認できれば良い。32ns毎に1/7の確率でランダムにclkが1となるようにし、波形を観測した。
+テストベンチを作成し, START信号が送られると3クロックごとに出力が0となっていることが確認できれば良い. 32ns毎に1/7の確率でランダムにclkが1となるようにし, 波形を観測した. 
 \begin{lstlisting}[caption=順序回路テストベンチ,language=verilog]
 `timescale 1ns / 1ps
 module test_sequence_rst;
@@ -820,10 +820,10 @@ endmodule
         \caption{順序回路の波形}
     \end{center}
 \end{figure}
-上で述べた設計通りに動作していることが確認できた。
+上で述べた設計通りに動作していることが確認できた. 
 \subsubsection{非同期リセット機能の追加}
-上記の回路では、クロックの立ち上がり時にSTART信号が1となっていないと出力がリセットされない。つまり、START信号が1になったとしても、次のclkの立ち上がりまでに0に戻っていれば検知されない。そこで、STARTのwireとは別に、そのような信号を送ってもリセットができるようなRST信号を加えた回路が以下である。
-2節のテストベンチに加え、rst信号を適当なタイミングで送るようなテストベンチを組み、挙動を確認する。
+上記の回路では, クロックの立ち上がり時にSTART信号が1となっていないと出力がリセットされない. つまり, START信号が1になったとしても, 次のclkの立ち上がりまでに0に戻っていれば検知されない. そこで, STARTのwireとは別に, そのような信号を送ってもリセットができるようなRST信号を加えた回路が以下である. 
+2節のテストベンチに加え, rst信号を適当なタイミングで送るようなテストベンチを組み, 挙動を確認する. 
 \begin{lstlisting}[caption=リセット付き順序回路デザイン,language=verilog]
 'timescale 1ns / 1ps
 module sequence_rst(
@@ -903,10 +903,10 @@ endmodule
         \caption{*****}
     \end{center}
 \end{figure}
-設計通りに、STARTはclkが立ち上がるときに1であればリセット、RSTは一瞬でも1となればリセットされるというように、設計通りに回路が動いていることがわかる。
+設計通りに, STARTはclkが立ち上がるときに1であればリセット, RSTは一瞬でも1となればリセットされるというように, 設計通りに回路が動いていることがわかる. 
 \subsection{4日目}
 \subsubsection{メモリ読み出し回路の設計とシミュレーション}
-クロックを用い、クロックの立ち上がりごとにmem.hexファイルに保存された16進法の1桁の数字を読み出す。アドレスは0から始め、clkの立ち上がりごとに1増やしている。なお、次の節の課題において用いる機能を考え、メモリ読み出し時に次の数字を取得するか、次の次の数字を取得するかを選択できるようにしている。
+クロックを用い, クロックの立ち上がりごとにmem.hexファイルに保存された16進法の1桁の数字を読み出す. アドレスは0から始め, clkの立ち上がりごとに1増やしている. なお, 次の節の課題において用いる機能を考え, メモリ読み出し時に次の数字を取得するか, 次の次の数字を取得するかを選択できるようにしている. 
 \begin{lstlisting}[caption=メモリ読み出し回路デザイン,language=verilog]
 `timescale 1ns / 1ps 
 module read_4 ( 
@@ -957,9 +957,9 @@ endmodule
         \caption{メモリ読み出し回路の波形}
     \end{center}
 \end{figure}
-実際に、mem.hexに保存されている数字が1クロックごとに読み出されていることがわかる。
+実際に, mem.hexに保存されている数字が1クロックごとに読み出されていることがわかる. 
 \subsubsection{メモリ比較回路の設計とシミュレーション}
-上記の読み出し回路を編集し、1クロックごとに次の数字と次の次の数字を読み出し、上で作成した4-bitリップルキャリアアダーを用いて2つの数字の和とキャリーの有無を計算する。オーバーフローがある場合はoutofが1となる。また、似たコードを用いてref.hexを1クロックごとに同時に読み出し、計算結果と一致するかどうかを調べ出力する。また、間違いが会った場合は標準出力にそのアドレスが表示される。
+上記の読み出し回路を編集し, 1クロックごとに次の数字と次の次の数字を読み出し, 上で作成した4-bitリップルキャリアアダーを用いて2つの数字の和とキャリーの有無を計算する. オーバーフローがある場合はoutofが1となる. また, 似たコードを用いてref.hexを1クロックごとに同時に読み出し, 計算結果と一致するかどうかを調べ出力する. また, 間違いが会った場合は標準出力にそのアドレスが表示される. 
 \begin{lstlisting}[caption=ref.hex読み出し回路デザイン,language=verilog]
 `timescale 1ns / 1ps
 module read_ref ( 
@@ -1013,9 +1013,9 @@ endmodule
         \caption{メモリ比較回路の波形}
     \end{center}
 \end{figure}
-計算結果と、読みだした結果と、それらの一致不一致が表現されていることがわかる。
+計算結果と, 読みだした結果と, それらの一致不一致が表現されていることがわかる. 
 \subsubsection{発展課題}
-Verilogを書いていて一番わかりづらいと感じたのは、Verilogは機械に近い言語であり、融通が聞きづらいなと思ったという点である。例えば、以下の様な例である。メモリ比較回路のデザインの中で、以下のような回路を書いていた。
+Verilogを書いていて一番わかりづらいと感じたのは, Verilogは機械に近い言語であり, 融通が聞きづらいなと思ったという点である. 例えば, 以下の様な例である. メモリ比較回路のデザインの中で, 以下のような回路を書いていた. 
 \begin{lstlisting}[caption=読み出し回路(一部 修正前),language=verilog]
 always @(posedge clk) begin
     if(~digit)mem_out <= mem[addr_reg];
@@ -1023,14 +1023,14 @@ always @(posedge clk) begin
     addr_reg = addr_reg + 1;
 end
 \end{lstlisting}
-このような回路にしていると、memのアドレス指定に$\mbox{addr}\_\mbox{reg}+1$の値が入っているが、これではオーバーフローすることがなく$\mbox{addr}\_\mbox{reg}$より1大きい値がアドレスとして入力され、メモリの参照外の部分を参照してしまっている。結果、値が読みだせずにxと表示されている。
+このような回路にしていると, memのアドレス指定に$\mbox{addr}\_\mbox{reg}+1$の値が入っているが, これではオーバーフローすることがなく$\mbox{addr}\_\mbox{reg}$より1大きい値がアドレスとして入力され, メモリの参照外の部分を参照してしまっている. 結果, 値が読みだせずにxと表示されている. 
 \begin{figure}[H]
     \begin{center}
         \includegraphics[width=14cm]{figures/before.png}
         \caption{改善前}
     \end{center}
 \end{figure}
-そこで、以下のように変数を2つ作り動作させると、設計通りに動かすことがきた。
+そこで, 以下のように変数を2つ作り動作させると, 設計通りに動かすことがきた. 
 \begin{lstlisting}[caption=読み出し回路(一部 修正後),language=verilog]
 addr_reg = 0;
 addr_reg_1 = 1;
@@ -1047,7 +1047,7 @@ end
         \caption{改善後}
     \end{center}
 \end{figure}
-このように、様々な基礎的な概念を理解していないとエラーが出ずにバグが生成されてしまうところが、特に高級言語しか扱わない自分にとっては新鮮であり、また戸惑ったポイントであった。
+このように, 様々な基礎的な概念を理解していないとエラーが出ずにバグが生成されてしまうところが, 特に高級言語しか扱わない自分にとっては新鮮であり, また戸惑ったポイントであった. 
 \section{参考文献}
 『Verilog使っててここは間違えやすいなぁと思ったところ（超初心者並感）』\url{https://hachiji.hatenadiary.com/entry/2021/04/27/002856} 2021年5月8日アクセス
 \end{document}
