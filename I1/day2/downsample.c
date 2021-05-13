@@ -4,16 +4,17 @@
 #include <stdio.h>
 
 int main(int argc, char** argv){
-    int fd = open(argv[1],O_RDONLY);
+    int space;
+    space = atoi(argv[1]);
     unsigned char data[1000];
     int i = 0;
+    int count = 0;
     while(1){
-        int n = read(fd,data,2000);
+        count++;
+        int n = read(0,data,1000);
         if(n == -1){ perror("read"); exit(1); }
         if (n == 0) break;
-        for(int j=0; j<n; j++){
-            printf("%d %d\n",i*1000+j,data[j]);
-        }
+        if(count%space == 0) {write(1,data,sizeof(data));}
         i++;
     }
 }
