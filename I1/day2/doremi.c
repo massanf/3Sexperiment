@@ -31,5 +31,4 @@ int main(){
         }
     }
     write(1,c,sizeof(c));
-    free(c);
 }
