@@ -29,14 +29,14 @@ int main(int argc, char** argv){
     int new = 10000/comp_fac;
     short comp[new];
     while(1){
-        int n = read(0,data,20000);
+        int n = read(0,data,10000);
         if(n == -1){ perror("read"); exit(1); }
         if (n == 0) break;
         for(int j=0; j<n; j++){
             if(j%comp_fac == 0){
-                comp[j/comp_fac] = data[j];
+                comp[j/comp_fac] = data[j]*0.5;
             }
         }
-        write(1,comp,new*2);
+        write(1,comp,new);
     }
 }
