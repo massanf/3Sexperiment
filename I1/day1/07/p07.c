@@ -31,7 +31,6 @@ int main(int argc, char ** argv)
   while (1) {
     /* read as many bytes as s can store ((end - begin) bytes) */
     int r = fread(s + begin, 1, end - begin, fp);
-    /*
     if (r < end - begin) {
       /* reached end of file */
       end = begin + r;
