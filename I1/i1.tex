@@ -1,6 +1,7 @@
 \documentclass{ltjsarticle}
 \usepackage{luatexja}
 %Packages -----------------------
+\usepackage{listings}
 \usepackage[euler]{textgreek}
 \usepackage{enumitem}
 \usepackage[margin=30mm]{geometry}
@@ -19,6 +20,28 @@
 %Command ---–--------------------
 \renewcommand{\figurename}{図}
 \renewcommand{\baselinestretch}{1.1}
+\lstset{
+    numbers=left,
+    basicstyle={\ttfamily},
+    identifierstyle={\small},
+    commentstyle={\smallitshape},
+    keywordstyle={\small\bfseries},
+    ndkeywordstyle={\small},
+    stringstyle={\small\ttfamily},
+    frame={tb},
+    breaklines=true,
+    columns=[l]{fullflexible},
+    xrightmargin=0\zw,
+    xleftmargin=3\zw,
+    numberstyle={\scriptsize},
+    stepnumber=1,
+    %numbersep=1,
+    lineskip=-0.5ex,
+    keywordstyle=\color[HTML]{e10021},
+    commentstyle=\color{gray},
+    emph=CascadeObjectDetector,
+    emphstyle=\color{blue}
+}
 %Command ------------------------
 %Title   ------------------------
 \title{実験レポート I1}
@@ -26,8 +49,18 @@
 \date{ May 20, 2021}
 %Title   ------------------------
 \begin{document}
-
 \maketitle
+\section{実験目的}
+実験の目的
+\section{1日目: 間違い探し}
+\subsection{00}
+stdio.hがインクルードされていないため正常に動作しない。一行目に以下のコードを追加すれば想定通りに動く。
+\begin{lstlisting}[caption=p00.c 追加部分,language=C]
+    #include <stdio.h>
+\end{lstlisting}
+\subsection{01}
+
+
 \section{参考文献}
 『title』\url{<url>} 2021年n月m日アクセス
 \end{document}

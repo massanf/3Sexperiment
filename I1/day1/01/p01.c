@@ -1,11 +1,11 @@
-/* 
+/*
  * p01.c
  */
 
-/* 
+/*
  * Usage:
- * 
- *  ./a.out
+ *
+ *./a.out
  *
  * Intended behavior
  *
@@ -15,27 +15,24 @@
  *
  */
 
-#include <stdio.h>
 #include <math.h>
+#include <stdio.h>
 
-double cos2(double x) 
-{
-  double c = cos(x);
-  return c * c;
+double cos2(double x) {
+    double c = cos(x);
+    return c * c;
 }
 
-double sin2(double x) 
-{
-  double s = sin(x);
-  return s * s;
+double sin2(double x) {
+    double s = sin(x);
+    return s * s;
 }
 
-int main()
-{
-  int i;
-  for (i = 0; i < 100; i++) {
-    double y = cos2(i) + sin2(i);
-    printf("cos^2(%d)+sin^2(%d) = %f\n", i, i, y);
-  }
-  return 0;
+int main() {
+    int i;
+    for(i = 0; i < 100; i++) {
+        double y = cos2(i) + sin2(i);
+        printf("cos^2(%d)+sin^2(%d) = %f\n", i, i, y);
+    }
+    return 0;
 }

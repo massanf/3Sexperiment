@@ -1,12 +1,12 @@
 #include <stdio.h>
 
-/* 
+/*
  * p00.c
  */
 
-/* 
+/*
  * usage:
- * 
+ *
  *   ./a.out
  *
  * Intented behavior:
@@ -14,13 +14,13 @@
  *
  */
 
-int main()
-{
-  FILE * fp = fopen("p00.c", "rb");
-  while (1) {
-    int c = fgetc(fp);
-    if (c == EOF) break;
-    fputc(c, stdout);
-  }
-  return 0;
+int main() {
+    FILE *fp = fopen("p00.c", "rb");
+    while(1) {
+        int c = fgetc(fp);
+        if(c == EOF)
+            break;
+        fputc(c, stdout);
+    }
+    return 0;
 }
