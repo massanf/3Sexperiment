@@ -139,11 +139,16 @@ void print_complex(FILE * wp,
   }
 }
 
-void bandpass(complex double *y, int n, double fs, double lowf){
-  double fout = fs/n;
-  for (int i=0; i < n; i++){
-    if (i*fout < lowf){
+void bandpass(complex double *y, int n, double fs, double lowf, double highf){
+  double fout = fs*2/n;
+  for (int i=0; i < n/2; i++){
+    if (i*fout < lowf || i*fout > highf){
       y[i] = 0;
+    }
+  }
+  for (int i=0; i < n/2; i++){
+    if (i*fout < lowf || i*fout > highf){
+      y[(n-1)-i] = 0;
     }
   }
 }
@@ -171,7 +176,7 @@ int main(int argc, char ** argv) {
     print_complex(wp, Y, n);
     fprintf(wp, "----------------\n");
     printf("%ld",n);
-    //bandpass(Y,n,44100,1000);
+    bandpass(Y,n,44100,400,4400);
     /* IFFT -> Z */
     ifft(Y, X, n);
     /* 標本の配列に変換 */

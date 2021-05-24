@@ -70,7 +70,23 @@ printfはstdio.h、atofはstdlib.hがそれぞれインクルードされてい�
 #include <stdlib.h>
 \end{lstlisting}
 \subsection{03}
-pがmallocされていないため、
+pがmallocされていないため設計通りに動作しない。
+
+\begin{lstlisting}[caption=p02.c 追加部分,language=C]
+vect3 * mk_point(double x, double y, double z)
+{
+  vect3 * p;
+  //p = malloc(sizeof(vect3));
+  p->x = x;
+  p->y = y;
+  p->z = z;
+  return p;
+}
+\end{lstlisting}
+\subsection{04}
+
+
+
 
 \section{参考文献}
 『title』\url{<url>} 2021年n月m日アクセス
