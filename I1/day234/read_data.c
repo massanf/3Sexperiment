@@ -8,12 +8,12 @@ int main(int argc, char** argv){
     unsigned char data[1000];
     int i = 0;
     while(1){
-        int n = read(fd,data,2000);
+        int n = read(fd,data,1000);
         if(n == -1){ perror("read"); exit(1); }
         if (n == 0) break;
         for(int j=0; j<n; j++){
-            printf("%d %d\n",i*1000+j,data[j]);
+            printf("%d %c\n",i,data[j]);
+            i++;
         }
-        i++;
     }
 }

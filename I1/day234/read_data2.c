@@ -12,8 +12,8 @@ int main(int argc, char** argv){
         if(n == -1){ perror("read"); exit(1); }
         if (n == 0) break;
         for(int j=0; j<n; j++){
-            printf("%d %d\n",i*1000+j,data[j]);
+            printf("%d %d\n",i,data[j]);
+            i++;
         }
-        i++;
     }
 }
