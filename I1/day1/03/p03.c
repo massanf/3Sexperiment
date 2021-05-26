@@ -42,7 +42,7 @@ double angle(vect3 * A, vect3 * B)
 vect3 * mk_point(double x, double y, double z)
 {
   vect3 * p;
-  //p = malloc(sizeof(vect3));
+  p = malloc(sizeof(vect3));
   p->x = x;
   p->y = y;
   p->z = z;
