@@ -51,7 +51,7 @@
 \begin{document}
 \maketitle
 \section{実験目的}
-実験の目的
+ファイルの入出力、音の入出力、音のデータ処理、デジタル信号処理などについて学び、理解を深める。
 \section{1日目: 間違い探し}
 \subsection{00}
 stdio.hがインクルードされていないため正常に動作しない。一行目に以下のコードを追加すれば想定通りに動く。
@@ -59,7 +59,7 @@ stdio.hがインクルードされていないため正常に動作しない。�
 #include <stdio.h>
 \end{lstlisting}
 \subsection{01}
-sinやcosといった関数が使われているにも関わらず、math.hがインクルードされていないためエラーとなる。以下のコードを追加すれば設計通りに動作する。
+sinやcosといった関数が使われているにも関わらず、math.hがイreンクルードされていないためエラーとなる。以下のコードを追加すれば設計通りに動作する。
 \begin{lstlisting}[caption=p01.c 変更部分language=C]
 #include <math.h>
 \end{lstlisting}
@@ -291,7 +291,7 @@ open: No such file or directory
 \subsection{準備課題2.7}
 成功すると、書き込まれたバイト数が返される。エラーの場合、-1が返され、errnoにエラーの原因を示す値が設定される。
 
-\section{本課題2.8}
+\subsection{本課題2.8}
 データと、そのデータが何バイト目だったかを表示するプログラムread\_data.cは以下である。
 \begin{lstlisting}[caption=read\_data.c,language=C]
 #include <fcntl.h>
@@ -366,7 +366,187 @@ Aborted.
 \subsection{準備課題2.12}
 再生すると、録音したファイルが再生された。また、間違えた数値を入力すると、ピッチが高い音や低い音、壊れたような大音量などが聞こえた。
 
+\subsection{本課題2.13}
+recを使い.raw形式で録音したデータをread\_data.cで読み込み、gnuplotで表示した結果が以下である。録音されたデータの波形が観測できた。
+
+\begin{figure}[H]
+  \begin{center}
+    \includegraphics[width=12cm]{figures/wave.png}
+    \caption{波形}
+  \end{center}
+\end{figure}
+
+\subsection{本課題2.14}
+正弦波を出力するプログラムsin.cを書いた。
+\begin{lstlisting}[caption=sin.c,language=C]
+#include <unistd.h>
+#include <stdio.h>
+#include <fcntl.h>
+#include <stdlib.h>
+#include <math.h>
+
+int main(int argc, char** argv){
+    double a = atof(argv[1]);
+    double f = atof(argv[2]);
+    int time = atoi(argv[3]);
+    double samp_f = 44100;
+    short c[time];
+    for (int i = 0; i < time; i++){
+        c[i] = sin(2.0*3.1416*f*(double)i/samp_f) * a;
+    }
+    write(1,c,sizeof(c));
+}
+\end{lstlisting}
+これを再生すると、440Hzのピッチ(ラの音)が流れた。
+
+\subsection{本課題2.15}
+shortを読み取るread\_data2.cを作成し、データをgnuplotでグラフ化した結果、以下のようになった。
+\begin{lstlisting}[caption=read\_data2.c,language=C]
+#include <stdio.h>
+#include <fcntl.h>
+#include <unistd.h>
+#include <stdlib.h>
+
+int main(int argc, char** argv){
+    int fd = open(argv[1],O_RDONLY);
+    int i = 0;
+    short data[1000];
+    while(1){
+        int n = read(fd,data,1000*sizeof(short));
+        if (n == -1){ perror("read"); exit(1); }
+        if (n == 0) break;
+        for(int j=0; j<n; j++){
+            printf("%d %d\n",i*1000+j,data[j]);
+        }
+        i++;
+    }
+    close(fd);
+}
+\end{lstlisting}
+\begin{figure}[H]
+  \begin{center}
+    \includegraphics[width=8cm]{figures/sin.png}
+    \caption{波形}
+  \end{center}
+\end{figure}
+
+\subsection{選択課題2.16}
+ドレミを作成する代わりに、音符と音の長さを指定することで曲が書けるようなことにした。音に関しては、Aを440Hzとし、半音上がるごとに$2^\frac{1}{12}$をかけた周波数を使えば良い。毎回計算をするのが面倒であるため、予め計算しておいて半音の数をリストにすれば再生できるようにした。また、音の長さも同じくリストで指定できるようにした。音も波形を足し算することで３つまで同時に鳴らすことができるようにした。コードは以下である。
+\begin{lstlisting}[caption=doremi.c,language=C]
+#include <unistd.h>
+#include <stdio.h>
+#include <fcntl.h>
+#include <stdlib.h>
+#include <math.h>
+
+int main(){
+    int notes = 2;
+    double a = 10000;
+    int notes_list[15] = {7,16,24,14,24,24,12,24,11,9,7,24,7,24,24};
+    int second_notes_list[15] = {24,11,11,11,11,12,12,12,24,12,12,12,12,24,11};
+    int third_notes_list[15] = {24,4,4,4,0,0,0,0,0,14,14,2,2,24,7};
+    int tempo = 23000;
+    double time_list[15] = {0.5, 0.5,0.5, 0.5,0.25,0.25, 0.5,0.5, 0.75,0.5,0.23,0.02,0.5,0.5,1};
+    double freq_list[25];
+    for(int j = 0; j < 25; j++){
+        freq_list[j] = 440*pow(pow(2,1.0/12),j);
+    }
+    freq_list[24] = 0;
+    int time_sum = 0;
+    for(int j = 0; j < sizeof(time_list)/sizeof(double); j++){
+        time_sum += time_list[j]*tempo;
+    }
+    short c[time_sum];
+    int currenttime = 0;
+    for(int j = 0; j < sizeof(notes_list)/sizeof(int); j++){
+        double samp_f = 44100;
+        for (int i = 0; i < time_list[j]*tempo; i++){
+            currenttime++;
+            c[currenttime] = sin(2.0*3.1416*freq_list[notes_list[j]]*(double)i/samp_f) * a +  sin(2.0*3.1416*freq_list[second_notes_list[j]]*(double)i/2/samp_f) * a/1.8 +  sin(2.0*3.1416*freq_list[third_notes_list[j]]*(double)i/4/samp_f) * a;
+        }
+    }
+    write(1,c,sizeof(c));
+}
+\end{lstlisting}
+例として作成した音源は以下のリンクに行くと聞けます。少し頑張ったのでぜひ聞いてみてください。（自動再生で次の曲が始まってしまうので気をつけてください。）
+\url{https://soundcloud.com/masayuki-fujita-121286832/dynamite-doremic}
+
+\section{4日目}
+\subsection{本課題4.1}
+16bitのモノラルを受け取って間引き、標準出力に出すプログラムが以下である。
+\begin{lstlisting}[caption=downsample.c,language=C]
+#include <stdio.h>
+#include <fcntl.h>
+#include <unistd.h>
+#include <stdlib.h>
+
+int main(int argc, char** argv){
+    short data[10000];
+    int comp_fac = atoi(argv[1]);
+    int new = 10000/comp_fac;
+    short comp[new];
+    while(1){
+        int n = read(0,data,10000);
+        if(n == -1){ perror("read"); exit(1); }
+        if (n == 0) break;
+        for(int j=0; j<n; j++){
+            if(j%comp_fac == 0){
+                comp[j/comp_fac] = data[j]*0.5;
+            }
+        }
+        write(1,comp,new);
+    }
+}
+\end{lstlisting}
+これを実行すると、間引いた.rawデータが出力された。
+
+\subsection{課題4.2}
+downsample.cを使ってデータを様々な標本化周波数で間引いた。その結果、正しく聞き取れると思われた標本化周波数はおおよそ22000Hz程度である。これは、もとのデータの標本化周波数44100の1/2倍となっているため、ナイキスト周波数以下の波であるということがわかる。
+
+\subsection{課題4.3}
+3528Hzの正弦波を44100Hzで標本化したデータと、1/10に間引いたデータをgnuplotで図示したものが以下である。
+\begin{figure}[H]
+  \begin{center}
+    \includegraphics[width=11cm]{figures/sinnew.png}
+    \caption{波形}
+  \end{center}
+\end{figure}
+
+\subsection{準備課題4.4}
+以下のコードを実行し、sound.rawとsoundnew.rawを再生すると、前後でほとんど変わらない音源が得られることが確認できた。
+\begin{lstlisting}[caption=FFT,language=bash]
+% gcc fft.c -o fft
+% ./fft 8192 < sound.raw  > soundnew.raw
+\end{lstlisting}
+
+\subsection{本課題4.5}
+fft.cにバンドパス機能を追加した。
+\begin{lstlisting}[caption=bandpass.c 追加関数1,language=C]
+void bandpass(complex double *y, int n, double fs, double lowf, double highf){
+  double fout = fs*2/n;
+  for (int i=0; i < n/2; i++){
+    if (i*fout < lowf || i*fout > highf){
+      y[i] = 0;
+    }
+  }
+  for (int i=0; i < n/2; i++){
+    if (i*fout < lowf || i*fout > highf){
+      y[(n-1)-i] = 0;
+    }
+  }
+}
+\end{lstlisting}
+\begin{lstlisting}[caption=bandpass.c main関数,language=C]
+fft(X, Y, n);
+print_complex(wp, Y, n);
+fprintf(wp, "----------------\n");
+printf("%ld",n);
+bandpass(Y,n,44100,400,4400); //引数3つ目がバンドパスの最低周波数、4つ目が最高周波数である。
+/* IFFT -> Z */
+ifft(Y, X, n);
+\end{lstlisting}
+例えば上記のコードでは、400Hz以上4400Hz以下の周波数だけ通す。普通のデータでは、低限は15Hz,高限は25000Hz程度を残しておけば、基本的にどのような音源でもほぼ支障がなさそうであった。なお、先程作成したファイルでは最低音の周波数から最高音の周波数を残しておけば、そっくりそのままの音源が再生された。
 
 \section{参考文献}
-『title』\url{<url>} 2021年n月m日アクセス
+『soxでサウンドファイルを編集』\url{https://blog.asial.co.jp/542} 2021年5月24日アクセス
 \end{document}
