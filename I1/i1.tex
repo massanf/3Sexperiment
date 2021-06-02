@@ -44,34 +44,36 @@
 }
 %Command ------------------------
 %Title   ------------------------
-\title{実験レポート I1}
-\author{東京大学工学部電気電子工学科 03210517\ 藤田 誠之 }
-\date{ May 20, 2021}
+\begin{titlepage}
+  \title{実験レポートA1}
+  \author{東京大学工学部電気電子工学科 03210517\\藤田 誠之\\~\\ 共同実験者  河野亮介・梶谷優貴・パリナヨックサタユ}
+  \date{May 15, 2021}
+\end{titlepage}
 %Title   ------------------------
 \begin{document}
 \maketitle
 \section{実験目的}
-ファイルの入出力、音の入出力、音のデータ処理、デジタル信号処理などについて学び、理解を深める。
+ファイルの入出力, 音の入出力, 音のデータ処理, デジタル信号処理などについて学び, 理解を深める. 
 \section{1日目: 間違い探し}
 \subsection{00}
-stdio.hがインクルードされていないため正常に動作しない。一行目に以下のコードを追加すれば想定通りに動く。
+stdio.hがインクルードされていないため正常に動作しない. 一行目に以下のコードを追加すれば想定通りに動く. 
 \begin{lstlisting}[caption=p00.c 変更部分,language=C]
 #include <stdio.h>
 \end{lstlisting}
 \subsection{01}
-sinやcosといった関数が使われているにも関わらず、math.hがイreンクルードされていないためエラーとなる。以下のコードを追加すれば設計通りに動作する。
+sinやcosといった関数が使われているにも関わらず, math.hがイreンクルードされていないためエラーとなる. 以下のコードを追加すれば設計通りに動作する. 
 \begin{lstlisting}[caption=p01.c 変更部分language=C]
 #include <math.h>
 \end{lstlisting}
 \subsection{02}
-printfはstdio.h、atofはstdlib.hがそれぞれインクルードされていないと使うことができない。冒頭に以下のコードを追加すれば設計通りに動作する。
+printfはstdio.h, atofはstdlib.hがそれぞれインクルードされていないと使うことができない. 冒頭に以下のコードを追加すれば設計通りに動作する. 
 \begin{lstlisting}[caption=p02.c 変更部分,language=C]
 #include <stdio.h>
 #include <stdlib.h>
 \end{lstlisting}
 
 \subsection{03}
-pがmallocされていないため設計通りに動作しない。mk\_pointを以下のように変更すると動作するようになる。
+pがmallocされていないため設計通りに動作しない. mk\_pointを以下のように変更すると動作するようになる. 
 
 \begin{lstlisting}[caption=p03.c 変更部分,language=C]
 vect3 * mk_point(double x, double y, double z)
@@ -85,7 +87,7 @@ vect3 * mk_point(double x, double y, double z)
 }
 \end{lstlisting}
 \subsection{04}
-vect3 p[1]となっていてもメモリの動的確保ができていないため正しく動作しない。mk\_point関数を以下のようにすれば正常に動作する。
+vect3 p[1]となっていてもメモリの動的確保ができていないため正しく動作しない. mk\_point関数を以下のようにすれば正常に動作する. 
 \begin{lstlisting}[caption=p04.c 変更部分,language=C]
 vect3 * mk_point(double x, double y, double z)
 {
@@ -98,19 +100,19 @@ vect3 * mk_point(double x, double y, double z)
 }
 \end{lstlisting}
 \subsection{05}
-ファイル名が間違っている。0が英字大文字のOとなっている。
+ファイル名が間違っている. 0が英字大文字のOとなっている. 
 \begin{lstlisting}[caption=p05.c 変更部分,language=C]
 FILE * fp = fopen("p05.c","rb");
 //FILE * fp = fopen("pO5.c","rb"); //間違い
 \end{lstlisting}
 \subsection{06}
-同じく、ファイル名が間違っている。0が英字大文字のOとなっている。
+同じく, ファイル名が間違っている. 0が英字大文字のOとなっている. 
 \begin{lstlisting}[caption=p06.c 変更部分,language=C]
 int fd = open("p06.c", O_RDONLY);
 //int fd = open("pO6.c", O_RDONLY); //間違い
 \end{lstlisting}
 \subsection{07}
-p07.cのプログラムは、文字をファイルから読み込み反対向きにしたものを出力する。以下のwhile文の中では、一行の大きさがわからないため、sが最初10バイトにセットされている。その後、文の終わりまで来ていなければsを10延長したい。そのため、一旦sの内容を保存するためにsよりも10長いtという新しい配列を用意し、それを新しくsとすることでより長い数列をmallocすることができた。
+p07.cのプログラムは, 文字をファイルから読み込み反対向きにしたものを出力する. 以下のwhile文の中では, 一行の大きさがわからないため, sが最初10バイトにセットされている. その後, 文の終わりまで来ていなければsを10延長したい. そのため, 一旦sの内容を保存するためにsよりも10長いtという新しい配列を用意し, それを新しくsとすることでより長い数列をmallocすることができた. 
 \begin{lstlisting}[caption=p07.c 変更部分,language=C]
 while (1) {
   /* read as many bytes as s can store ((end - begin) bytes) */
@@ -132,7 +134,7 @@ while (1) {
 }
 \end{lstlisting}
 \subsection{08}
-H\_expressionにおいて、「(」と「)」の新しい文字を読み込んだ際のみ文字の位置を参照するpの値が増えていない。文字を参照した後、pを1増やせば良い。つまり、H\_expressionを以下のように変更すれば良い。
+H\_expressionにおいて, 「(」と「)」の新しい文字を読み込んだ際のみ文字の位置を参照するpの値が増えていない. 文字を参照した後, pを1増やせば良い. つまり, H\_expressionを以下のように変更すれば良い. 
 \begin{lstlisting}[caption=p08.c 変更部分, language=C]
 double H_expression() 
 {
@@ -166,7 +168,7 @@ double H_expression()
 
 \section{2日目}
 \subsection{準備課題2.1}
-0バイト目に0, ... , 255バイト目に255が入るようなプログラムmk\_data.cは以下のようになる。
+0バイト目に0, ... , 255バイト目に255が入るようなプログラムmk\_data.cは以下のようになる. 
 \begin{lstlisting}[caption=mk\_data.c,language=C]
 #include <stdio.h>
 #include <fcntl.h>
@@ -184,14 +186,14 @@ int main (){
     return 0;
 }
 \end{lstlisting}
-for構文を使い、my\_dataというファイルを作成し書き込む。もしすでに存在する場合は上書きする。
+for構文を使い, my\_dataというファイルを作成し書き込む. もしすでに存在する場合は上書きする. 
 \subsection{準備課題2.2}
-lsコマンドでファイルサイズを以下のように確認したところ、256バイトであることがわかった。
+lsコマンドでファイルサイズを以下のように確認したところ, 256バイトであることがわかった. 
 \begin{lstlisting}[caption=ファイルサイズの確認,language=bash]
 % ls -l my_data
 -rw-r--r--@ 1 masayukifujita  staff  256 May 27 00:37 my_data
 \end{lstlisting}
-また、catでこのファイルを開くと以下のように文字化けしている。
+また, catでこのファイルを開くと以下のように文字化けしている. 
 
 \begin{figure}[H]
   \begin{center}
@@ -201,7 +203,7 @@ lsコマンドでファイルサイズを以下のように確認したところ
 \end{figure}
 
 \subsection{準備課題2.3}
-mk\_hitoshi.cを作る。以下のようになる。
+mk\_hitoshi.cを作る. 以下のようになる. 
 \begin{lstlisting}[caption=hitoshi.c,language=C]
 #include <stdio.h>
 #include <fcntl.h>
@@ -222,12 +224,12 @@ int main (){
     return 0;
 }
 \end{lstlisting}
-この中身をcatコマンドで確認すると、以下のように表示される。
+この中身をcatコマンドで確認すると, 以下のように表示される. 
 \begin{lstlisting}[caption=hitoshi]
 人志
 \end{lstlisting}
 \subsection{準備課題2.4}
-odコマンドでmy\_dataを表示すると以下のようになる。
+odコマンドでmy\_dataを表示すると以下のようになる. 
 \begin{lstlisting}[caption=od,language=bash]
 % od -t u1 my_data
 0000000     0   1   2   3   4   5   6   7   8   9  10  11  12  13  14  15
@@ -248,9 +250,9 @@ odコマンドでmy\_dataを表示すると以下のようになる。
 0000360   240 241 242 243 244 245 246 247 248 249 250 251 252 253 254 255
 0000400
 \end{lstlisting}
-実際にファイルの中身が表示されていることがわかる。
+実際にファイルの中身が表示されていることがわかる. 
 \subsection{準備課題2.5}
-もう少しマシなmk\_data.c(コマンドライン引数でファイル名前を与えるプログラム)が以下である。
+もう少しマシなmk\_data.c(コマンドライン引数でファイル名前を与えるプログラム)が以下である. 
 \begin{lstlisting}[caption=mk\_data2.c,language=C]
 #include <stdio.h>
 #include <fcntl.h>
@@ -273,26 +275,26 @@ int main (int argc, char ** argv){
     return 0;
 }
 \end{lstlisting}
-以下のように実行すると良い。
+以下のように実行すると良い. 
 \begin{lstlisting}[caption=mk\_data2.c 実効,language=bash]
 % gcc mk_data2.c -o mk_data2
 % ./mk_data2 newfile
 \end{lstlisting}
 
 \subsection{準備課題2.6}
-Listing15がそうである。存在しないディレクトリで実行すると以下のようになる。
+Listing15がそうである. 存在しないディレクトリで実行すると以下のようになる. 
 \begin{lstlisting}[caption=mk\_data2 存在しないディレクトリで実効,language=bash]
 % gcc mk_data2.c -o mk_data2
 % ./mk_data2 foo/newfile
 open: No such file or directory
 \end{lstlisting}
-このように、予期されるエラーが出た。
+このように, 予期されるエラーが出た. 
 
 \subsection{準備課題2.7}
-成功すると、書き込まれたバイト数が返される。エラーの場合、-1が返され、errnoにエラーの原因を示す値が設定される。
+成功すると, 書き込まれたバイト数が返される. エラーの場合, -1が返され, errnoにエラーの原因を示す値が設定される. 
 
 \subsection{本課題2.8}
-データと、そのデータが何バイト目だったかを表示するプログラムread\_data.cは以下である。
+データと, そのデータが何バイト目だったかを表示するプログラムread\_data.cは以下である. 
 \begin{lstlisting}[caption=read\_data.c,language=C]
 #include <fcntl.h>
 #include <unistd.h>
@@ -314,7 +316,7 @@ int main(int argc, char** argv){
     }
 }
 \end{lstlisting}
-実行すると、以下のようになる。
+実行すると, 以下のようになる. 
 \begin{lstlisting}[caption=read\_data.c 実行,language=bash]
 % gcc read_data.c -o read_data
 % ./read_data my_data
@@ -327,7 +329,7 @@ int main(int argc, char** argv){
 \end{lstlisting}
 
 \subsection{準備課題2.9}
-音を取り込んだファイルをls -lで確認すると、以下のようになった。
+音を取り込んだファイルをls -lで確認すると, 以下のようになった. 
 \begin{lstlisting}[caption=recコマンド,language=bash]
 % rec sound.wav
 
@@ -344,13 +346,13 @@ Aborted.
 \end{lstlisting}
 
 \subsection{準備課題2.10}
-再生する。先程録音したデータが再生された。
+再生する. 先程録音したデータが再生された. 
 \begin{lstlisting}[caption=playコマンド,language=bash]
 % play sound.wav
 \end{lstlisting}
 
 \subsection{準備課題2.11}
-ファイル形式を変えて、おおよそ3秒間保存した。その結果をls -lコマンドでファイルサイズを確認した。
+ファイル形式を変えて, おおよそ3秒間保存した. その結果をls -lコマンドでファイルサイズを確認した. 
 \begin{lstlisting}[caption=ファイル形式,language=C]
 % ls -l a.wav
 -rw-r--r--  1 masayukifujita  staff  1138768 May 27 01:40 a.wav
@@ -361,13 +363,13 @@ Aborted.
 % ls -l a.ogg
 -rw-r--r--  1 masayukifujita  staff  31952 May 27 01:40 a.ogg
 \end{lstlisting}
-.datが一番ファイルが大きく、.oggが一番小さいとわかる。
+.datが一番ファイルが大きく, .oggが一番小さいとわかる. 
 
 \subsection{準備課題2.12}
-再生すると、録音したファイルが再生された。また、間違えた数値を入力すると、ピッチが高い音や低い音、壊れたような大音量などが聞こえた。
+再生すると, 録音したファイルが再生された. また, 間違えた数値を入力すると, ピッチが高い音や低い音, 壊れたような大音量などが聞こえた. 
 
 \subsection{本課題2.13}
-recを使い.raw形式で録音したデータをread\_data.cで読み込み、gnuplotで表示した結果が以下である。録音されたデータの波形が観測できた。
+recを使い.raw形式で録音したデータをread\_data.cで読み込み, gnuplotで表示した結果が以下である. 録音されたデータの波形が観測できた. 
 
 \begin{figure}[H]
   \begin{center}
@@ -377,7 +379,7 @@ recを使い.raw形式で録音したデータをread\_data.cで読み込み、g
 \end{figure}
 
 \subsection{本課題2.14}
-正弦波を出力するプログラムsin.cを書いた。
+正弦波を出力するプログラムsin.cを書いた. 
 \begin{lstlisting}[caption=sin.c,language=C]
 #include <unistd.h>
 #include <stdio.h>
@@ -397,10 +399,10 @@ int main(int argc, char** argv){
     write(1,c,sizeof(c));
 }
 \end{lstlisting}
-これを再生すると、440Hzのピッチ(ラの音)が流れた。
+これを再生すると, 440Hzのピッチ(ラの音)が流れた. 
 
 \subsection{本課題2.15}
-shortを読み取るread\_data2.cを作成し、データをgnuplotでグラフ化した結果、以下のようになった。
+shortを読み取るread\_data2.cを作成し, データをgnuplotでグラフ化した結果, 以下のようになった. 
 \begin{lstlisting}[caption=read\_data2.c,language=C]
 #include <stdio.h>
 #include <fcntl.h>
@@ -431,7 +433,7 @@ int main(int argc, char** argv){
 \end{figure}
 
 \subsection{選択課題2.16}
-ドレミを作成する代わりに、音符と音の長さを指定することで曲が書けるようなことにした。音に関しては、Aを440Hzとし、半音上がるごとに$2^\frac{1}{12}$をかけた周波数を使えば良い。毎回計算をするのが面倒であるため、予め計算しておいて半音の数をリストにすれば再生できるようにした。また、音の長さも同じくリストで指定できるようにした。音も波形を足し算することで３つまで同時に鳴らすことができるようにした。コードは以下である。
+ドレミを作成する代わりに, 音符と音の長さを指定することで曲が書けるようなことにした. 音に関しては, Aを440Hzとし, 半音上がるごとに$2^\frac{1}{12}$をかけた周波数を使えば良い. 毎回計算をするのが面倒であるため, 予め計算しておいて半音の数をリストにすれば再生できるようにした. また, 音の長さも同じくリストで指定できるようにした. 音も波形を足し算することで３つまで同時に鳴らすことができるようにした. コードは以下である. 
 \begin{lstlisting}[caption=doremi.c,language=C]
 #include <unistd.h>
 #include <stdio.h>
@@ -468,12 +470,12 @@ int main(){
     write(1,c,sizeof(c));
 }
 \end{lstlisting}
-例として作成した音源は以下のリンクに行くと聞けます。少し頑張ったのでぜひ聞いてみてください。（自動再生で次の曲が始まってしまうので気をつけてください。）
+例として作成した音源は以下のリンクに行くと聞けます. 少し頑張ったのでぜひ聞いてみてください. （自動再生で次の曲が始まってしまうので気をつけてください. ）
 \url{https://soundcloud.com/masayuki-fujita-121286832/dynamite-doremic}
 
 \section{4日目}
 \subsection{本課題4.1}
-16bitのモノラルを受け取って間引き、標準出力に出すプログラムが以下である。
+16bitのモノラルを受け取って間引き, 標準出力に出すプログラムが以下である. 
 \begin{lstlisting}[caption=downsample.c,language=C]
 #include <stdio.h>
 #include <fcntl.h>
@@ -498,13 +500,13 @@ int main(int argc, char** argv){
     }
 }
 \end{lstlisting}
-これを実行すると、間引いた.rawデータが出力された。
+これを実行すると, 間引いた.rawデータが出力された. 
 
 \subsection{課題4.2}
-downsample.cを使ってデータを様々な標本化周波数で間引いた。その結果、正しく聞き取れると思われた標本化周波数はおおよそ22000Hz程度である。これは、もとのデータの標本化周波数44100の1/2倍となっているため、ナイキスト周波数以下の波であるということがわかる。
+downsample.cを使ってデータを様々な標本化周波数で間引いた. その結果, 正しく聞き取れると思われた標本化周波数はおおよそ22000Hz程度である. これは, もとのデータの標本化周波数44100の1/2倍となっているため, ナイキスト周波数以下の波であるということがわかる. 
 
 \subsection{課題4.3}
-3528Hzの正弦波を44100Hzで標本化したデータと、1/10に間引いたデータをgnuplotで図示したものが以下である。
+3528Hzの正弦波を44100Hzで標本化したデータと, 1/10に間引いたデータをgnuplotで図示したものが以下である. 
 \begin{figure}[H]
   \begin{center}
     \includegraphics[width=11cm]{figures/sinnew.png}
@@ -513,14 +515,14 @@ downsample.cを使ってデータを様々な標本化周波数で間引いた�
 \end{figure}
 
 \subsection{準備課題4.4}
-以下のコードを実行し、sound.rawとsoundnew.rawを再生すると、前後でほとんど変わらない音源が得られることが確認できた。
+以下のコードを実行し, sound.rawとsoundnew.rawを再生すると, 前後でほとんど変わらない音源が得られることが確認できた. 
 \begin{lstlisting}[caption=FFT,language=bash]
 % gcc fft.c -o fft
 % ./fft 8192 < sound.raw  > soundnew.raw
 \end{lstlisting}
 
 \subsection{本課題4.5}
-fft.cにバンドパス機能を追加した。
+fft.cにバンドパス機能を追加した. 
 \begin{lstlisting}[caption=bandpass.c 追加関数1,language=C]
 void bandpass(complex double *y, int n, double fs, double lowf, double highf){
   double fout = fs*2/n;
@@ -541,11 +543,11 @@ fft(X, Y, n);
 print_complex(wp, Y, n);
 fprintf(wp, "----------------\n");
 printf("%ld",n);
-bandpass(Y,n,44100,400,4400); //引数3つ目がバンドパスの最低周波数、4つ目が最高周波数である。
+bandpass(Y,n,44100,400,4400); //引数3つ目がバンドパスの最低周波数, 4つ目が最高周波数である. 
 /* IFFT -> Z */
 ifft(Y, X, n);
 \end{lstlisting}
-例えば上記のコードでは、400Hz以上4400Hz以下の周波数だけ通す。普通のデータでは、低限は15Hz,高限は25000Hz程度を残しておけば、基本的にどのような音源でもほぼ支障がなさそうであった。なお、先程作成したファイルでは最低音の周波数から最高音の周波数を残しておけば、そっくりそのままの音源が再生された。
+例えば上記のコードでは, 400Hz以上4400Hz以下の周波数だけ通す. 普通のデータでは, 低限は15Hz,高限は25000Hz程度を残しておけば, 基本的にどのような音源でもほぼ支障がなさそうであった. なお, 先程作成したファイルでは最低音の周波数から最高音の周波数を残しておけば, そっくりそのままの音源が再生された. 
 
 \section{参考文献}
 『soxでサウンドファイルを編集』\url{https://blog.asial.co.jp/542} 2021年5月24日アクセス

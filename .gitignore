@@ -10,6 +10,7 @@
 /**/*.dvi
 /**/*.log
 /**/*.out
+/**/*.mp4
 /**/.DS_Store
 /**/.texpadtmp/
 /**/.vscode/
