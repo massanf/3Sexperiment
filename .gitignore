@@ -2,6 +2,7 @@
 
 /**/out/
 /**/figures/
+/**/lt2circuitikz/
 
 /**/*.ipynb_checkpoints/
 /**/*.pdf
