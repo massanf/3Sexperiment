@@ -277,7 +277,6 @@
         \caption{反転増幅回路 回路図}
     \end{center}
 \end{figure}
-\end{comment}
 
 \begin{figure}[H]
     \begin{center}
@@ -364,6 +363,73 @@
             \end{tikzpicture}
         \end{adjustbox}
         \caption{非反転増幅回路 回路図}
+    \end{center}
+\end{figure}
+\end{comment}
+
+\begin{figure}[H]
+    \begin{center}
+        %\centering%
+		\begin{tikzpicture}[circuit ee IEC, scale=0.6666666667,line width=.5pt]% default: 0.4
+            %\tikzstyle{every node}=[font=\small];%
+            %\node [draw] at (0.0,0.0) {\pgfkeysvalueof{/tikz/circuitikz/tripoles/op amp/font}};
+        \draw [/lt2ti/Net](9.0,1.0)to[*short,-, color=netcolor] (9.0,1.0);% wire w3_w7 start
+        \draw [/lt2ti/Net](8.5,-2.5)to[*short,-*, color=netcolor] (8.5,-2.5);% wire w3_w7 end
+        \draw [/lt2ti/Net](9.0,1.0) --  (8.5,1.0) -- (8.5,-2.5); % wire w3_w7 polyline 
+        \draw [/lt2ti/Net](10.0,-2.0)to[*short,-, color=netcolor] (10.0,-2.0);% wire w4_w5 start
+        \draw [/lt2ti/Net](10.0,-1.0)to[*short,-, color=netcolor] (10.0,-1.0);% wire w4_w5 end
+        \draw [/lt2ti/Net](10.0,-2.0) --  (10.0,-1.5) -- (10.0,-1.0); % wire w4_w5 polyline 
+        \draw [/lt2ti/Net](5.5,-2.5)to[*short,-, color=netcolor] (5.5,-2.5);% wire w6_w10 start
+        \draw [/lt2ti/Net](5.0,-3.0)to[*short,-, color=netcolor] (5.0,-3.0);% wire w6_w10 end
+        \draw [/lt2ti/Net](5.5,-2.5) --  (5.0,-2.5) -- (5.0,-3.0); % wire w6_w10 polyline 
+        \draw [/lt2ti/Net](8.5,-2.5)to[*short,*-, color=netcolor] (8.0,-2.5);% wire w8
+        \draw [/lt2ti/Net](9.0,-2.5)to[*short,-*, color=netcolor] (8.5,-2.5);% wire w9
+        \draw [/lt2ti/Net](11.5,-3.0)to[*short,*-, color=netcolor] (11.5,1.0);% wire w11
+        \draw [/lt2ti/Net](11.5,-3.0)to[*short,*-, color=netcolor] (11.0,-3.0);% wire w12
+        \draw [/lt2ti/Net](12.0,-3.0)to[*short,-*, color=netcolor] (11.5,-3.0);% wire w13
+        \draw [/lt2ti/Net](9.0,-3.5)to[*short,-, color=netcolor] (9.0,-3.5);% wire w14_w18_w17_w19 start
+        \draw [/lt2ti/Net](5.5,-4.5)to[*short,-, color=netcolor] (5.5,-4.5);% wire w14_w18_w17_w19 end
+        \draw [/lt2ti/Net](9.0,-3.5) --  (8.0,-3.5) --  (8.0,-4.5) --  (7.0,-4.5) -- (5.5,-4.5); % wire w14_w18_w17_w19 polyline 
+        \draw [/lt2ti/Net](0.5,-4.5)to[*short,-, color=netcolor] (0.5,-3.5);% wire w15
+        \draw [/lt2ti/Net](3.0,-4.5)to[*short,-, color=netcolor] (3.0,-3.5);% wire w16
+        \draw [/lt2ti/Net](10.0,-5.5)to[*short,-, color=netcolor] (10.0,-5.5);% wire w20_w21 start
+        \draw [/lt2ti/Net](10.0,-4.0)to[*short,-, color=netcolor] (10.0,-4.0);% wire w20_w21 end
+        \draw [/lt2ti/Net](10.0,-5.5) --  (10.0,-5.0) -- (10.0,-4.0); % wire w20_w21 polyline 
+        \draw [/lt2ti/Net](0.5,-7.5)to[*short,*-, color=netcolor] (0.5,-7.0);% wire w22
+        \draw [/lt2ti/Net](3.0,-7.5)to[*short,*-, color=netcolor] (3.0,-7.0);% wire w23
+        \draw [/lt2ti/Net](3.0,-7.5)to[*short,*-*, color=netcolor] (0.5,-7.5);% wire w24
+        \draw [/lt2ti/Net](5.5,-7.0)to[*short,-, color=netcolor] (5.5,-7.0);% wire w25_w26 start
+        \draw [/lt2ti/Net](3.0,-7.5)to[*short,-*, color=netcolor] (3.0,-7.5);% wire w25_w26 end
+        \draw [/lt2ti/Net](5.5,-7.0) --  (5.5,-7.5) -- (3.0,-7.5); % wire w25_w26 polyline 
+        \draw [/lt2ti/Net](0.5,-8.0)to[*short,-*, color=netcolor] (0.5,-7.5);% wire w27
+         \draw (5.0, -3.0) node[ground, xscale=1, yscale=1, rotate=270, ] (undefined) {};%  (undefined)++(0.0,0.0) node {undefined }; % component "circuiTikz\gnd" "undefined" 
+         \draw (0.5, -8.0) node[ground, xscale=1, yscale=1, rotate=270, ] (undefined) {};%  (undefined)++(0.0,0.0) node {undefined }; % component "circuiTikz\gnd" "undefined" 
+         \draw (10.08863, -3.0) node[op amp, xscale=1, rotate=0, ] (U1) {}  (U1)++(1*0.75,  1*1.25) node {U1 }; % component "OpAmps/ADA4817" "U1" 
+         \draw (10.0,-2.0) to [*short, -] (U1.up);   \draw (10.0,-4.0) to [*short, -] (U1.down); % supply % component "OpAmps/ADA4817" "U1" 
+         \draw (9.0,-3.5) to [*short, -] (U1.+);   \draw (9.0,-2.5) to [*short, -] (U1.-); \draw (11.0,-3.0) to [*short, -] (U1.out); % in/out % component "OpAmps/ADA4817" "U1" 
+          \draw (0.5, -4.5) to[*V, l_=V1,,, -, ] (0.5,-7.0){}; % component "voltage" "V1" 
+          \draw (-0.7, -6.7) node[label=15V]{};
+          \draw (3.0, -4.5) to[*V, l_=V2,,, -, ] (3.0,-7.0){}; % component "voltage" "V2" 
+          \draw (1.8, -6.7) node[label=-15V] {};
+          \draw (5.5, -4.5) to[*V, l_=V3, a^=,, -, ] (5.5,-7.0){}; % component "voltage" "V3" 
+          \draw (8.0, -2.5) to[*resistor, a_=R1, l^=\SI{1}{\kilo\ohm}, -, ] (5.5,-2.5){}; %\node [] at (8.5,-2.0) {x}; % component "res" "R1" 
+          \draw (11.5, 1.0) to[*resistor, a_=R2, l^=\SI{10}{\kilo\ohm}, -, ] (9.0,1.0){}; %\node [] at (12.0,1.5) {x}; % component "res" "R2" 
+          \node (OUT) [] at (12.0,-3.0) {};% label mark % label "" "OUT" lbl30 
+          \node (OUTtxt) [ netlabelcolor, above= -0.24cm of OUT] {{\pgfkeysvalueof{/lt2ti/netlabel/font}OUT}}; % label "" "OUT" lbl30 
+          \node (VP) [] at (10.0,-1.5) {};% label mark % label "" "VP" lbl32 
+          \node (VPtxt) [ netlabelcolor, above= -0.24cm of VP] {{\pgfkeysvalueof{/lt2ti/netlabel/font}VP}}; % label "" "VP" lbl32 
+          \node (VP) [] at (0.5,-3.5) {};% label mark % label "" "VP" lbl33 
+          \node (VPtxt) [ netlabelcolor, above= -0.24cm of VP] {{\pgfkeysvalueof{/lt2ti/netlabel/font}VP}}; % label "" "VP" lbl33 
+          \node (VN) [] at (3.0,-3.5) {};% label mark % label "" "VN" lbl34 
+          \node (VNtxt) [ netlabelcolor, above= -0.24cm of VN] {{\pgfkeysvalueof{/lt2ti/netlabel/font}VN}}; % label "" "VN" lbl34 
+          \node (VN) [] at (10.0,-5.0) {};% label mark % label "" "VN" lbl35 
+          \node (VNtxt) [ netlabelcolor, above= -0.24cm of VN] {{\pgfkeysvalueof{/lt2ti/netlabel/font}VN}}; % label "" "VN" lbl35 
+          \node (IN) [] at (7.0,-4.5) {};% label mark % label "" "IN" lbl36 
+          \node (INtxt) [ netlabelcolor, above= -0.24cm of IN] {{\pgfkeysvalueof{/lt2ti/netlabel/font}IN}}; % label "" "IN" lbl36 
+        
+            \end{tikzpicture}
+        
+        \caption{非反転増幅回路}
     \end{center}
 \end{figure}
 
