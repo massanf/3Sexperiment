@@ -156,10 +156,9 @@
 \section{実験の目的}
 
 \section{考察}
-\newpage
 \subsection*{8.1 増幅}
 (1) 電圧利得20dB, 40dBの2つの反転増幅回路及び非反転増幅回路のしゃ断周波数を調べる. 
-反転増幅回路、非反転増幅回路の回路図は以下である。
+反転増幅回路の回路図は以下である。
 
 \begin{figure}[H]
     \begin{center}
@@ -225,6 +224,48 @@
         \caption{反転増幅回路 回路図}
     \end{center}
 \end{figure}
+
+この周波数特性をシュミレーションした結果、以下のような結果が得られた。
+
+\begin{figure}[H]
+    \begin{center}
+        \includegraphics[width=12cm]{graphing/figures/反転/20dB&40dB(理論曲線あり).png}
+        \caption{反転増幅回路 周波数特性}
+    \end{center}
+\end{figure}
+
+ゲインが3dB落ちたところ(37dBと17dB)に線を引き、遮断周波数をグラフから読み取ると、40dB, 20dBの場合それぞれについて50000Hz, 4700000Hzとなっていることがわかる。ここで、色のついている線は理論曲線である。ただし、理論曲線の計算においては上記のように計測した遮断周波数を用いた。\\
+
+また、カットオフ周波数以降の傾きを最大２乗法で調べた結果、以下のようになった。
+
+\begin{table}[H]
+    \begin{center}
+        \begin{tabular}{|l|c|c|} \hline
+            dB & 範囲 & 傾き \\ \hline
+            20 & > 1200000Hz & -19.98 \\ \hline
+            40 & > 100000Hz & -19.94 \\ \hline
+        \end{tabular}
+        \caption{反転増幅回路 傾き}
+    \end{center}
+\end{table}
+
+周波数特性は以下の式で表されることがわかっている。
+$$
+A(j\omega) = \frac{A_0}{1+j\frac{\omega}{\omega_p}}
+$$
+よってゲイン特性は
+$$
+A(j\omega) = \left|\frac{A_0}{1+j\frac{\omega}{\omega_p}}\right|
+$$
+と表され、$\omega=\omega_p$とすれば
+$$
+\left|\frac{A_0}{1+j\frac{\omega}{\omega_p}}\right| = \left|\frac{A_0}{1+j}\right| = \frac{A_0}{\sqrt{2}}
+$$
+となり、20dB, 40dBそれぞれにおいて$A_0$は10, 100
+ことがわかる。また、$\omega \gg \omega_p$とすると$\frac{\omega}{\omega_p} \fallingdotseq \omega$であるから、
+$$
+\left|\frac{A_0}{1+j\frac{\omega}{\omega_p}}\right| \fallingdotseq \frac{A_0\omega_p}{j\omega}
+$$
 
 \begin{comment}
 \begin{figure}[H]
@@ -432,6 +473,8 @@
         \caption{非反転増幅回路}
     \end{center}
 \end{figure}
+
+
 
 \section{参考文献}
 『title』\url{<url>} 2021年n月m日アクセス
