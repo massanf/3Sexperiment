@@ -157,8 +157,9 @@
 
 \section{考察}
 \subsection*{8.1 増幅}
-(1) 電圧利得20dB, 40dBの2つの反転増幅回路及び非反転増幅回路のしゃ断周波数を調べる. 
-反転増幅回路の回路図は以下である。
+
+(1) 電圧利得20dB, 40dBの2つの反転増幅回路及び非反転増幅回路のしゃ断周波数を調べる. \\
+20dB, 40dBの増幅率を持つようにするには、$20\log_{10}\frac{R2}{R1} = 20, 40$となるようにR1, R2を決めれば良い。今回の実験では、R1を$\SI{1}{\kilo\ohm}$とし、20dBでR2を$\SI{10}{\kilo\ohm}$、40dBでR2を$\SI{100}{\kilo\ohm}$とすればよい。また、反転増幅回路の回路図は以下である。
 
 \begin{figure}[H]
     \begin{center}
@@ -221,7 +222,7 @@
           \node (INtxt) [ netlabelcolor, above= -0.24cm of IN] {{\pgfkeysvalueof{/lt2ti/netlabel/font}IN}}; % label "" "IN" lbl34 
         
             \end{tikzpicture}
-        \caption{反転増幅回路 回路図}
+        \caption{反転増幅回路(20dB) 回路図}
     \end{center}
 \end{figure}
 
@@ -229,12 +230,12 @@
 
 \begin{figure}[H]
     \begin{center}
-        \includegraphics[width=12cm]{graphing/figures/反転/20dB&40dB(理論曲線あり).png}
+        \includegraphics[width=11cm]{graphing/figures/反転/20dB&40dB(理論曲線あり).png}
         \caption{反転増幅回路 周波数特性}
     \end{center}
 \end{figure}
 
-ゲインが3dB落ちたところ(37dBと17dB)に線を引き、遮断周波数をグラフから読み取ると、40dB, 20dBの場合それぞれについて50000Hz, 4700000Hzとなっていることがわかる。ここで、色のついている線は理論曲線である。ただし、理論曲線の計算においては上記のように計測した遮断周波数を用いた。\\
+ゲインが3dB落ちたところ(37dBと17dB)に線を引き、遮断周波数をグラフから読み取ると、40dB, 20dBの場合それぞれについて50000Hz, 470000Hzとなっていることがわかる。ここで、色のついている線は理論曲線である。ただし、理論曲線の計算においては上記のように計測した遮断周波数を用いた。\\
 
 また、カットオフ周波数以降の傾きを最大２乗法で調べた結果、以下のようになった。
 
@@ -242,14 +243,14 @@
     \begin{center}
         \begin{tabular}{|l|c|c|} \hline
             dB & 範囲 & 傾き \\ \hline
-            20 & > 1200000Hz & -19.98 \\ \hline
-            40 & > 100000Hz & -19.94 \\ \hline
+            20 & > $1.2\times 10^{6}$Hz & -19.98 \\ \hline
+            40 & > $1.0 \times 10^5$Hz & -19.94 \\ \hline
         \end{tabular}
         \caption{反転増幅回路 傾き}
     \end{center}
 \end{table}
 
-周波数特性は以下の式で表されることがわかっている。
+周波数特性は以下の式で表されることがわかっている。なお、20dB, 40dBの場合において、それぞれ$A_0$は10, 100である。
 $$
 A(j\omega) = \frac{A_0}{1+j\frac{\omega}{\omega_p}}
 $$
@@ -261,11 +262,11 @@ $$
 $$
 \left|\frac{A_0}{1+j\frac{\omega}{\omega_p}}\right| = \left|\frac{A_0}{1+j}\right| = \frac{A_0}{\sqrt{2}}
 $$
-となり、20dB, 40dBそれぞれにおいて$A_0$は10, 100
-ことがわかる。また、$\omega \gg \omega_p$とすると$\frac{\omega}{\omega_p} \fallingdotseq \omega$であるから、
+となることがわかる。また、$\omega \gg \omega_p$とすると$1+\frac{\omega}{\omega_p} \fallingdotseq \frac{\omega}{\omega_p}$であるから、
 $$
-\left|\frac{A_0}{1+j\frac{\omega}{\omega_p}}\right| \fallingdotseq \frac{A_0\omega_p}{j\omega}
+\left|\frac{A_0}{1+j\frac{\omega}{\omega_p}}\right| \fallingdotseq A_0\omega_p\omega^{-1}
 $$
+と表されることから、dB表記では傾きが-20dB/decとなることがわかる。20dB, 40dBの場合において、どちらも誤差率0\%で理論値と一致していることがわかる。\\~\\
 
 \begin{comment}
 \begin{figure}[H]
@@ -318,6 +319,139 @@ $$
         \caption{反転増幅回路 回路図}
     \end{center}
 \end{figure}
+
+\end{comment}
+
+非反転増幅回路については、$増幅率 = \frac{V_out}{V_in} = \frac{R1+R2}{R2}$が20dB, 40dBとなるようにすれば良い。回路図は以下のようになる。
+
+\begin{figure}[H]
+    \begin{center}
+        %\centering%
+		\begin{tikzpicture}[circuit ee IEC, scale=0.6666666667,line width=.5pt]% default: 0.4
+            %\tikzstyle{every node}=[font=\small];%
+            %\node [draw] at (0.0,0.0) {\pgfkeysvalueof{/tikz/circuitikz/tripoles/op amp/font}};
+        \draw [/lt2ti/Net](9.0,1.0)to[*short,-, color=netcolor] (9.0,1.0);% wire w3_w7 start
+        \draw [/lt2ti/Net](8.5,-2.5)to[*short,-*, color=netcolor] (8.5,-2.5);% wire w3_w7 end
+        \draw [/lt2ti/Net](9.0,1.0) --  (8.5,1.0) -- (8.5,-2.5); % wire w3_w7 polyline 
+        \draw [/lt2ti/Net](10.0,-2.0)to[*short,-, color=netcolor] (10.0,-2.0);% wire w4_w5 start
+        \draw [/lt2ti/Net](10.0,-1.0)to[*short,-, color=netcolor] (10.0,-1.0);% wire w4_w5 end
+        \draw [/lt2ti/Net](10.0,-2.0) --  (10.0,-1.5) -- (10.0,-1.0); % wire w4_w5 polyline 
+        \draw [/lt2ti/Net](5.5,-2.5)to[*short,-, color=netcolor] (5.5,-2.5);% wire w6_w10 start
+        \draw [/lt2ti/Net](5.0,-3.0)to[*short,-, color=netcolor] (5.0,-3.0);% wire w6_w10 end
+        \draw [/lt2ti/Net](5.5,-2.5) --  (5.0,-2.5) -- (5.0,-3.0); % wire w6_w10 polyline 
+        \draw [/lt2ti/Net](8.5,-2.5)to[*short,*-, color=netcolor] (8.0,-2.5);% wire w8
+        \draw [/lt2ti/Net](9.0,-2.5)to[*short,-*, color=netcolor] (8.5,-2.5);% wire w9
+        \draw [/lt2ti/Net](11.5,-3.0)to[*short,*-, color=netcolor] (11.5,1.0);% wire w11
+        \draw [/lt2ti/Net](11.5,-3.0)to[*short,*-, color=netcolor] (11.0,-3.0);% wire w12
+        \draw [/lt2ti/Net](12.0,-3.0)to[*short,-*, color=netcolor] (11.5,-3.0);% wire w13
+        \draw [/lt2ti/Net](9.0,-3.5)to[*short,-, color=netcolor] (9.0,-3.5);% wire w14_w18_w17_w19 start
+        \draw [/lt2ti/Net](5.5,-4.5)to[*short,-, color=netcolor] (5.5,-4.5);% wire w14_w18_w17_w19 end
+        \draw [/lt2ti/Net](9.0,-3.5) --  (8.0,-3.5) --  (8.0,-4.5) --  (7.0,-4.5) -- (5.5,-4.5); % wire w14_w18_w17_w19 polyline 
+        \draw [/lt2ti/Net](0.5,-4.5)to[*short,-, color=netcolor] (0.5,-3.5);% wire w15
+        \draw [/lt2ti/Net](3.0,-4.5)to[*short,-, color=netcolor] (3.0,-3.5);% wire w16
+        \draw [/lt2ti/Net](10.0,-5.5)to[*short,-, color=netcolor] (10.0,-5.5);% wire w20_w21 start
+        \draw [/lt2ti/Net](10.0,-4.0)to[*short,-, color=netcolor] (10.0,-4.0);% wire w20_w21 end
+        \draw [/lt2ti/Net](10.0,-5.5) --  (10.0,-5.0) -- (10.0,-4.0); % wire w20_w21 polyline 
+        \draw [/lt2ti/Net](0.5,-7.5)to[*short,*-, color=netcolor] (0.5,-7.0);% wire w22
+        \draw [/lt2ti/Net](3.0,-7.5)to[*short,*-, color=netcolor] (3.0,-7.0);% wire w23
+        \draw [/lt2ti/Net](3.0,-7.5)to[*short,*-*, color=netcolor] (0.5,-7.5);% wire w24
+        \draw [/lt2ti/Net](5.5,-7.0)to[*short,-, color=netcolor] (5.5,-7.0);% wire w25_w26 start
+        \draw [/lt2ti/Net](3.0,-7.5)to[*short,-*, color=netcolor] (3.0,-7.5);% wire w25_w26 end
+        \draw [/lt2ti/Net](5.5,-7.0) --  (5.5,-7.5) -- (3.0,-7.5); % wire w25_w26 polyline 
+        \draw [/lt2ti/Net](0.5,-8.0)to[*short,-*, color=netcolor] (0.5,-7.5);% wire w27
+         \draw (5.0, -3.0) node[ground, xscale=1, yscale=1, rotate=270, ] (undefined) {};%  (undefined)++(0.0,0.0) node {undefined }; % component "circuiTikz\gnd" "undefined" 
+         \draw (0.5, -8.0) node[ground, xscale=1, yscale=1, rotate=270, ] (undefined) {};%  (undefined)++(0.0,0.0) node {undefined }; % component "circuiTikz\gnd" "undefined" 
+         \draw (10.08863, -3.0) node[op amp, xscale=1, rotate=0, ] (U1) {}  (U1)++(1*0.75,  1*1.25) node {U1 }; % component "OpAmps/ADA4817" "U1" 
+         \draw (10.0,-2.0) to [*short, -] (U1.up);   \draw (10.0,-4.0) to [*short, -] (U1.down); % supply % component "OpAmps/ADA4817" "U1" 
+         \draw (9.0,-3.5) to [*short, -] (U1.+);   \draw (9.0,-2.5) to [*short, -] (U1.-); \draw (11.0,-3.0) to [*short, -] (U1.out); % in/out % component "OpAmps/ADA4817" "U1" 
+          \draw (0.5, -4.5) to[*V, l_=V1,,, -, ] (0.5,-7.0){}; % component "voltage" "V1" 
+          \draw (-0.7, -6.7) node[label=15V]{};
+          \draw (3.0, -4.5) to[*V, l_=V2,,, -, ] (3.0,-7.0){}; % component "voltage" "V2" 
+          \draw (1.8, -6.7) node[label=-15V] {};
+          \draw (5.5, -4.5) to[*V, l_=V3, a^=,, -, ] (5.5,-7.0){}; % component "voltage" "V3" 
+          \draw (8.0, -2.5) to[*resistor, a_=R1, l^=\SI{1}{\kilo\ohm}, -, ] (5.5,-2.5){}; %\node [] at (8.5,-2.0) {x}; % component "res" "R1" 
+          \draw (11.5, 1.0) to[*resistor, a_=R2, l^=\SI{10}{\kilo\ohm}, -, ] (9.0,1.0){}; %\node [] at (12.0,1.5) {x}; % component "res" "R2" 
+          \node (OUT) [] at (12.0,-3.0) {};% label mark % label "" "OUT" lbl30 
+          \node (OUTtxt) [ netlabelcolor, above= -0.24cm of OUT] {{\pgfkeysvalueof{/lt2ti/netlabel/font}OUT}}; % label "" "OUT" lbl30 
+          \node (VP) [] at (10.0,-1.5) {};% label mark % label "" "VP" lbl32 
+          \node (VPtxt) [ netlabelcolor, above= -0.24cm of VP] {{\pgfkeysvalueof{/lt2ti/netlabel/font}VP}}; % label "" "VP" lbl32 
+          \node (VP) [] at (0.5,-3.5) {};% label mark % label "" "VP" lbl33 
+          \node (VPtxt) [ netlabelcolor, above= -0.24cm of VP] {{\pgfkeysvalueof{/lt2ti/netlabel/font}VP}}; % label "" "VP" lbl33 
+          \node (VN) [] at (3.0,-3.5) {};% label mark % label "" "VN" lbl34 
+          \node (VNtxt) [ netlabelcolor, above= -0.24cm of VN] {{\pgfkeysvalueof{/lt2ti/netlabel/font}VN}}; % label "" "VN" lbl34 
+          \node (VN) [] at (10.0,-5.0) {};% label mark % label "" "VN" lbl35 
+          \node (VNtxt) [ netlabelcolor, above= -0.24cm of VN] {{\pgfkeysvalueof{/lt2ti/netlabel/font}VN}}; % label "" "VN" lbl35 
+          \node (IN) [] at (7.0,-4.5) {};% label mark % label "" "IN" lbl36 
+          \node (INtxt) [ netlabelcolor, above= -0.24cm of IN] {{\pgfkeysvalueof{/lt2ti/netlabel/font}IN}}; % label "" "IN" lbl36 
+        
+            \end{tikzpicture}
+
+        \caption{非反転増幅回路}
+    \end{center}
+\end{figure}
+
+この回路のシミュレーションした結果、以下のような周波数特性が得られた。
+
+\begin{figure}[H]
+    \begin{center}
+        \includegraphics[width=11cm]{graphing/figures/非反転/20dB&40dB(理論曲線あり).png}
+        \caption{非反転増幅回路 周波数特性}
+    \end{center}
+\end{figure}
+
+ゲインが3dB落ちたところ(37dBと17dB)に線を引き、遮断周波数をグラフから夜mいｍ取ると、40dB, 20dbの場合それぞれについて50000Hz, 470000Hzとなっていることがわかる。反転増幅回路の周波数特性のグラフと同様に、色のついてる線は理論曲線である。
+\\
+カットオフ周波数以降の傾きを最大２乗法で調べた結果、以下のようになった。
+
+\begin{table}[H]
+    \begin{center}
+        \begin{tabular}{|l|c|c|} \hline
+            dB & 範囲 & 傾き \\ \hline
+            20 & > $1.0\times 10^{6}$Hz & -19.96 \\ \hline
+            40 & > $1.0 \times 10^5$Hz & -19.95 \\ \hline
+        \end{tabular}
+        \caption{非反転増幅回路 傾き}
+    \end{center}
+\end{table}
+
+周波数特性については同様の式で表され、dB表記では傾きが-20dB/decとなることがわかり、20dB, 40dBの場合それぞれについてどちらも誤差率0\%で理論値と一致していることがわかる。
+\\~\\
+(2)今回の微分回路の閉ループ利得は極箇所式A2.41から
+$$
+\frac{V_o(s)}{V_r(s)} = \frac{sC_rR_f}{(sC_rR_r + 1)(sC_fR_f + 1)}
+$$
+と与えられる。それぞれの波形は以下のような形となった。
+\begin{figure}[H]
+    \begin{center}
+        \includegraphics[width=11cm]{graphing/figures/微分/with_rrcf.png}
+        \caption{微分増幅器 波形}
+    \end{center}
+\end{figure}
+
+微分回路は$f < f_r$において微分特性を示し、$f_r < f < f_f$において反転増幅を示し、$f_f < f$において積分特性を示す。50Hz, 5000Hz, $5\times10^8Hz$の電圧を流した際の周波数応答の結果が以下である。
+\begin{figure}[H]
+    \begin{center}
+        \includegraphics[width=11cm]{graphing/figures/ステップ/微分.png}
+        \caption{f = 50Hzの微分回路の周波数特性}
+    \end{center}
+\end{figure}
+
+\begin{figure}[H]
+    \begin{center}
+        \includegraphics[width=11cm]{graphing/figures/ステップ/反転.png}
+        \caption{f = 5000Hzの微分回路の周波数特性}
+    \end{center}
+\end{figure}
+
+\begin{figure}[H]
+    \begin{center}
+        \includegraphics[width=11cm]{graphing/figures/ステップ/積分.png}
+        \caption{f = $5.0\times 10^8$Hzの微分回路の周波数特性}
+    \end{center}
+\end{figure}
+
+\subsection*{8.2}
+(1)ウィーンブリッジは以下のような回路である。
 
 \begin{figure}[H]
     \begin{center}
@@ -403,78 +537,74 @@ $$
           \node (OUTtxt) [ netlabelcolor, above= -0.24cm of OUT] {{\pgfkeysvalueof{/lt2ti/netlabel/font}OUT}}; % label "" "OUT" lbl45 
             \end{tikzpicture}
         \end{adjustbox}
-        \caption{非反転増幅回路 回路図}
+        \caption{ウィーンブリッジ 回路図}
     \end{center}
 \end{figure}
-\end{comment}
+
+この回路をシミューレーションし、周波数特性を得た。
 
 \begin{figure}[H]
     \begin{center}
-        %\centering%
-		\begin{tikzpicture}[circuit ee IEC, scale=0.6666666667,line width=.5pt]% default: 0.4
-            %\tikzstyle{every node}=[font=\small];%
-            %\node [draw] at (0.0,0.0) {\pgfkeysvalueof{/tikz/circuitikz/tripoles/op amp/font}};
-        \draw [/lt2ti/Net](9.0,1.0)to[*short,-, color=netcolor] (9.0,1.0);% wire w3_w7 start
-        \draw [/lt2ti/Net](8.5,-2.5)to[*short,-*, color=netcolor] (8.5,-2.5);% wire w3_w7 end
-        \draw [/lt2ti/Net](9.0,1.0) --  (8.5,1.0) -- (8.5,-2.5); % wire w3_w7 polyline 
-        \draw [/lt2ti/Net](10.0,-2.0)to[*short,-, color=netcolor] (10.0,-2.0);% wire w4_w5 start
-        \draw [/lt2ti/Net](10.0,-1.0)to[*short,-, color=netcolor] (10.0,-1.0);% wire w4_w5 end
-        \draw [/lt2ti/Net](10.0,-2.0) --  (10.0,-1.5) -- (10.0,-1.0); % wire w4_w5 polyline 
-        \draw [/lt2ti/Net](5.5,-2.5)to[*short,-, color=netcolor] (5.5,-2.5);% wire w6_w10 start
-        \draw [/lt2ti/Net](5.0,-3.0)to[*short,-, color=netcolor] (5.0,-3.0);% wire w6_w10 end
-        \draw [/lt2ti/Net](5.5,-2.5) --  (5.0,-2.5) -- (5.0,-3.0); % wire w6_w10 polyline 
-        \draw [/lt2ti/Net](8.5,-2.5)to[*short,*-, color=netcolor] (8.0,-2.5);% wire w8
-        \draw [/lt2ti/Net](9.0,-2.5)to[*short,-*, color=netcolor] (8.5,-2.5);% wire w9
-        \draw [/lt2ti/Net](11.5,-3.0)to[*short,*-, color=netcolor] (11.5,1.0);% wire w11
-        \draw [/lt2ti/Net](11.5,-3.0)to[*short,*-, color=netcolor] (11.0,-3.0);% wire w12
-        \draw [/lt2ti/Net](12.0,-3.0)to[*short,-*, color=netcolor] (11.5,-3.0);% wire w13
-        \draw [/lt2ti/Net](9.0,-3.5)to[*short,-, color=netcolor] (9.0,-3.5);% wire w14_w18_w17_w19 start
-        \draw [/lt2ti/Net](5.5,-4.5)to[*short,-, color=netcolor] (5.5,-4.5);% wire w14_w18_w17_w19 end
-        \draw [/lt2ti/Net](9.0,-3.5) --  (8.0,-3.5) --  (8.0,-4.5) --  (7.0,-4.5) -- (5.5,-4.5); % wire w14_w18_w17_w19 polyline 
-        \draw [/lt2ti/Net](0.5,-4.5)to[*short,-, color=netcolor] (0.5,-3.5);% wire w15
-        \draw [/lt2ti/Net](3.0,-4.5)to[*short,-, color=netcolor] (3.0,-3.5);% wire w16
-        \draw [/lt2ti/Net](10.0,-5.5)to[*short,-, color=netcolor] (10.0,-5.5);% wire w20_w21 start
-        \draw [/lt2ti/Net](10.0,-4.0)to[*short,-, color=netcolor] (10.0,-4.0);% wire w20_w21 end
-        \draw [/lt2ti/Net](10.0,-5.5) --  (10.0,-5.0) -- (10.0,-4.0); % wire w20_w21 polyline 
-        \draw [/lt2ti/Net](0.5,-7.5)to[*short,*-, color=netcolor] (0.5,-7.0);% wire w22
-        \draw [/lt2ti/Net](3.0,-7.5)to[*short,*-, color=netcolor] (3.0,-7.0);% wire w23
-        \draw [/lt2ti/Net](3.0,-7.5)to[*short,*-*, color=netcolor] (0.5,-7.5);% wire w24
-        \draw [/lt2ti/Net](5.5,-7.0)to[*short,-, color=netcolor] (5.5,-7.0);% wire w25_w26 start
-        \draw [/lt2ti/Net](3.0,-7.5)to[*short,-*, color=netcolor] (3.0,-7.5);% wire w25_w26 end
-        \draw [/lt2ti/Net](5.5,-7.0) --  (5.5,-7.5) -- (3.0,-7.5); % wire w25_w26 polyline 
-        \draw [/lt2ti/Net](0.5,-8.0)to[*short,-*, color=netcolor] (0.5,-7.5);% wire w27
-         \draw (5.0, -3.0) node[ground, xscale=1, yscale=1, rotate=270, ] (undefined) {};%  (undefined)++(0.0,0.0) node {undefined }; % component "circuiTikz\gnd" "undefined" 
-         \draw (0.5, -8.0) node[ground, xscale=1, yscale=1, rotate=270, ] (undefined) {};%  (undefined)++(0.0,0.0) node {undefined }; % component "circuiTikz\gnd" "undefined" 
-         \draw (10.08863, -3.0) node[op amp, xscale=1, rotate=0, ] (U1) {}  (U1)++(1*0.75,  1*1.25) node {U1 }; % component "OpAmps/ADA4817" "U1" 
-         \draw (10.0,-2.0) to [*short, -] (U1.up);   \draw (10.0,-4.0) to [*short, -] (U1.down); % supply % component "OpAmps/ADA4817" "U1" 
-         \draw (9.0,-3.5) to [*short, -] (U1.+);   \draw (9.0,-2.5) to [*short, -] (U1.-); \draw (11.0,-3.0) to [*short, -] (U1.out); % in/out % component "OpAmps/ADA4817" "U1" 
-          \draw (0.5, -4.5) to[*V, l_=V1,,, -, ] (0.5,-7.0){}; % component "voltage" "V1" 
-          \draw (-0.7, -6.7) node[label=15V]{};
-          \draw (3.0, -4.5) to[*V, l_=V2,,, -, ] (3.0,-7.0){}; % component "voltage" "V2" 
-          \draw (1.8, -6.7) node[label=-15V] {};
-          \draw (5.5, -4.5) to[*V, l_=V3, a^=,, -, ] (5.5,-7.0){}; % component "voltage" "V3" 
-          \draw (8.0, -2.5) to[*resistor, a_=R1, l^=\SI{1}{\kilo\ohm}, -, ] (5.5,-2.5){}; %\node [] at (8.5,-2.0) {x}; % component "res" "R1" 
-          \draw (11.5, 1.0) to[*resistor, a_=R2, l^=\SI{10}{\kilo\ohm}, -, ] (9.0,1.0){}; %\node [] at (12.0,1.5) {x}; % component "res" "R2" 
-          \node (OUT) [] at (12.0,-3.0) {};% label mark % label "" "OUT" lbl30 
-          \node (OUTtxt) [ netlabelcolor, above= -0.24cm of OUT] {{\pgfkeysvalueof{/lt2ti/netlabel/font}OUT}}; % label "" "OUT" lbl30 
-          \node (VP) [] at (10.0,-1.5) {};% label mark % label "" "VP" lbl32 
-          \node (VPtxt) [ netlabelcolor, above= -0.24cm of VP] {{\pgfkeysvalueof{/lt2ti/netlabel/font}VP}}; % label "" "VP" lbl32 
-          \node (VP) [] at (0.5,-3.5) {};% label mark % label "" "VP" lbl33 
-          \node (VPtxt) [ netlabelcolor, above= -0.24cm of VP] {{\pgfkeysvalueof{/lt2ti/netlabel/font}VP}}; % label "" "VP" lbl33 
-          \node (VN) [] at (3.0,-3.5) {};% label mark % label "" "VN" lbl34 
-          \node (VNtxt) [ netlabelcolor, above= -0.24cm of VN] {{\pgfkeysvalueof{/lt2ti/netlabel/font}VN}}; % label "" "VN" lbl34 
-          \node (VN) [] at (10.0,-5.0) {};% label mark % label "" "VN" lbl35 
-          \node (VNtxt) [ netlabelcolor, above= -0.24cm of VN] {{\pgfkeysvalueof{/lt2ti/netlabel/font}VN}}; % label "" "VN" lbl35 
-          \node (IN) [] at (7.0,-4.5) {};% label mark % label "" "IN" lbl36 
-          \node (INtxt) [ netlabelcolor, above= -0.24cm of IN] {{\pgfkeysvalueof{/lt2ti/netlabel/font}IN}}; % label "" "IN" lbl36 
-        
-            \end{tikzpicture}
-        
-        \caption{非反転増幅回路}
+        \includegraphics[width=11cm]{graphing/figures/ウィーンブリッジ/k=0.3.png}
+        \caption{ウィーンブリッジの周波数特性(k=0.3)}
     \end{center}
 \end{figure}
 
+\begin{figure}[H]
+    \begin{center}
+        \includegraphics[width=11cm]{graphing/figures/ウィーンブリッジ/k=0.501.png}
+        \caption{ウィーンブリッジの周波数特性(k=0.501)}
+    \end{center}
+\end{figure}
 
+シミュレーションの結果から、$k = 0.501$のときに発振している。また、ウィーンブリッジの帰還を切断し、開ループ利得の周波数応答を観測した結果が以下である。
+
+\begin{figure}[H]
+    \begin{center}
+        \includegraphics[width=11cm]{graphing/figures/ウィーンブリッジ/openloop.png}
+        \caption{開ループ利得}
+    \end{center}
+\end{figure}
+
+ここで、グラフは極大値が小さい方から準に、kの値が0.110, 0.210, 0.310, 0.410, 0.510, 0.610, 0.710, 0.810, 0.910である。また、ゲインの極大値がちょうど0となる直前の線を青とした。この線はk=0.510の線である。
+
+ウィーンブリッジの閉ループ利得$A_v$は以下である。
+$$
+A_v(s) = A\frac{(sCR)^2+3sCR+1}{(sCR)^2+(3-kA)sCR+1} 
+$$
+Aは非反転増幅回路の増幅率である。R1 = 1, R2 = 5なのでゲインは$\frac{R1+R2}{R1} = 6$である。また、開ループゲインを計測すると、ゲインが15.56dBであったので5.99となった。この回路は$\omega CR = 1$, $k=3/A$で発信するが、$A=5.99$、$\omega CR = 1$、$k=0.5008$、($s=j\omega$)を上の式の分母に代入すると
+$$
+(sCR)^2 + (3-kA)sCR + 1 = -(\omega CR)^2 + (3-kA)j\omega CR + 1 = 0
+$$
+となることから、k=5.008でこの回路は発信することがわかる。
+
+(2) 
+k=0.8で通した結果が以下である。
+\begin{figure}[H]
+    \begin{center}
+        \includegraphics[width=11cm]{graphing/figures/ウィーンブリッジ/k=0.501.png}
+        \caption{ウィーンブリッジの周波数特性(k=0.501)}
+    \end{center}
+\end{figure}
+
+これを見ると、これはk>0.501であるが発振していることがわかる。この理由を考える。
+
+kの値を0から1へと変化させた際、
+$$
+(sCR)^2 + (3-kA)sCR + 1 = 0
+$$
+の解を考える。s=0となるのは解の公式から
+$$
+s = \frac{-(3-kA)CR \pm \sqrt{((3-kA)CR)^2 - 4(CR)^2}}{2(CR)^2}
+$$
+のときであるから、この値がkによってどう変化するかを考える。今回用いた値は$C = 16.7nF$, $R = 10000\Omega$, $A=6$であるから、kを0から変化させたときのsの動きを追ったものが以下である。ただし、$\pm$によって2つに分岐している。
+\begin{figure}[H]
+    \begin{center}
+        \includegraphics[width=11cm]{graphing/figures/circle.png}
+        \caption{sの軌道}
+    \end{center}
+\end{figure}
+このように、k=0.5を境に右反面にsが入ることがわかる。
 
 \section{参考文献}
 『title』\url{<url>} 2021年n月m日アクセス
