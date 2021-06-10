@@ -154,6 +154,7 @@
 \maketitle
 
 \section{実験の目的}
+増幅回路、発振回路、フィルタ回路を題材とし、アナログ回路の設計に欠かせないLCRなどの線形素子と演算増幅器を用いた回路設計について学習する.
 
 \section{考察}
 \subsection*{8.1 増幅}
@@ -416,11 +417,8 @@ $$
 
 周波数特性については同様の式で表され、dB表記では傾きが-20dB/decとなることがわかり、20dB, 40dBの場合それぞれについてどちらも誤差率0\%で理論値と一致していることがわかる。
 \\~\\
-(2)今回の微分回路の閉ループ利得は極箇所式A2.41から
-$$
-\frac{V_o(s)}{V_r(s)} = \frac{sC_rR_f}{(sC_rR_r + 1)(sC_fR_f + 1)}
-$$
-と与えられる。それぞれの波形は以下のような形となった。
+(2)
+周波数特性は以下のような形となった。
 \begin{figure}[H]
     \begin{center}
         \includegraphics[width=11cm]{graphing/figures/微分/with_rrcf.png}
@@ -428,6 +426,18 @@ $$
     \end{center}
 \end{figure}
 
+
+今回の微分回路の閉ループ利得は極箇所式A2.41から
+$$
+\frac{V_o(s)}{V_r(s)} = \frac{sC_rR_f}{(sC_rR_r + 1)(sC_fR_f + 1)}
+= \frac{j\omega C_rR_f}{(j\omega C_rR_r + 1)(j\omega C_fR_f + 1)}
+$$
+$$
+= \frac{j\omega C_rR_f}{(j\omega \frac{1}{\omega_r}+1)(j\omega \frac{1}{\omega_f}+1)}
+$$
+と与えられる。$f<f_r$においては、$Z_r$はおもに$C_r$に支配され、また$Z_f$もおもに$C_f$によって支配されているため、回路全体としては微分特性を持つ。$f_f<f$においては
+逆に、$Z_r$はおもに$R_r$に支配され、また$Z_f$もおもに$R_f$によって支配されているため、積分特性を持つ。\\
+\\
 微分回路は$f < f_r$において微分特性を示し、$f_r < f < f_f$において反転増幅を示し、$f_f < f$において積分特性を示す。50Hz, 5000Hz, $5\times10^8Hz$の電圧を流した際の周波数応答の結果が以下である。
 \begin{figure}[H]
     \begin{center}
@@ -604,8 +614,8 @@ $$
         \caption{sの軌道}
     \end{center}
 \end{figure}
-このように、k=0.5を境に右反面にsが入ることがわかる。
+このように、k=0.5を境に右反面にsが入り、不安定となることがわかる。
 
 \section{参考文献}
-『title』\url{<url>} 2021年n月m日アクセス
+教科書 2021年6月7日
 \end{document}
