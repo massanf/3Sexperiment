@@ -17,7 +17,7 @@ int main(int argc, char** argv){
   struct sockaddr_in client_addr;
   socklen_t len = sizeof(struct sockaddr_in);
   int s = accept(ss, (struct sockaddr *)&client_addr, &len);
-  if (s == -1){perror("accept"); exit(1);}
+  if (s == -1){perror("accept"); exit(1); } else {printf("connected\n");}
   unsigned char data[1000];
   while(1){
       int n = read(0,data,1000);

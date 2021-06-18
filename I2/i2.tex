@@ -1,0 +1,85 @@
+\documentclass{ltjsarticle}
+\usepackage{luatexja}
+%Packages -----------------------
+\usepackage{listings}
+\usepackage[euler]{textgreek}
+\usepackage{enumitem}
+\usepackage[margin=30mm]{geometry}
+\usepackage{comment}
+\usepackage{hyperref}
+\usepackage{float}
+\usepackage{textcomp}
+\usepackage{xparse}
+%Circuit ------------------------
+\usepackage{amsmath,amssymb}
+\usepackage{graphicx}
+\usepackage{siunitx}
+\usepackage{tikz}
+\usepackage[siunitx, RPvoltages]{circuitikz}
+%Circuit ------------------------
+%Command ---–--------------------
+\renewcommand{\figurename}{図}
+\renewcommand{\baselinestretch}{1.1}
+\lstset{
+    numbers=left,
+    basicstyle={\ttfamily},
+    identifierstyle={\small},
+    commentstyle={\smallitshape},
+    keywordstyle={\small\bfseries},
+    ndkeywordstyle={\small},
+    stringstyle={\small\ttfamily},
+    frame={tb},
+    breaklines=true,
+    columns=[l]{fullflexible},
+    xrightmargin=0\zw,
+    xleftmargin=3\zw,
+    numberstyle={\scriptsize},
+    stepnumber=1,
+    %numbersep=1,
+    lineskip=-0.5ex,
+    keywordstyle=\color[HTML]{e10021},
+    commentstyle=\color{gray},
+    emph=CascadeObjectDetector,
+    emphstyle=\color{blue}
+}
+%Command ------------------------
+%Title   ------------------------
+\begin{titlepage}
+    \title{実験レポートI2}
+    \author{東京大学工学部電気電子工学科 03210517\\藤田 誠之\\~\\ 共同実験者  河野亮介・梶谷優貴・パリナヨックサタユ}
+    \date{June 13, 2021}
+  \end{titlepage}
+%Title   ------------------------
+
+\begin{document}
+
+\maketitle
+
+\subsection*{本課題5.9}
+
+サーバー側、クライアント側のPCでそれぞれ以下のプログラムを実行した。
+\begin{lstlisting}[caption=サーバー側,language=bash]
+$ nc -l 9999 > test_output.txt
+\end{lstlisting}
+\begin{lstlisting}[caption=クライアント側,language=bash]
+$ nc 192.168.0.6 9999 < test_input.txt
+\end{lstlisting}
+その結果、サーバー側のパソコンのtest\_output.txtにクライアント側のtest\_input.fileの内容をコピーすることができた。
+
+
+\subsection*{本課題5.10}
+サーバー側、クライアント側のPCでそれぞれ以下のプログラムを実行した。
+\begin{lstlisting}[caption=サーバー側,language=bash]
+$ rec -t raw -b 16 -c 1 -e s -r 44100 - | nc -l 9999
+\end{lstlisting}
+\begin{lstlisting}[caption=クライアント側,language=bash]
+$ nc 192.168.0.6 9999 | play -t raw -b 16 -c 1 -e s -r 44100 -
+\end{lstlisting}
+サーバー側ではrecで収録したデータをncに送り、クライアント側ではncから受け取ったデータをplayで再生している。その結果、サーバー側の音声をクライアント側から聴くことができた。
+
+
+
+
+\section{参考文献}
+『title』\url{<url>} 2021年n月m日アクセス
+\end{document}
