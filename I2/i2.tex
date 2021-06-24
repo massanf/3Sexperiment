@@ -22,7 +22,7 @@
 \renewcommand{\baselinestretch}{1.1}
 \lstset{
     numbers=left,
-    basicstyle={\ttfamily},
+    basicstyle=\ttfamily\small,
     identifierstyle={\small},
     commentstyle={\smallitshape},
     keywordstyle={\small\bfseries},
@@ -36,11 +36,14 @@
     numberstyle={\scriptsize},
     stepnumber=1,
     %numbersep=1,
-    lineskip=-0.5ex,
+    lineskip=0ex,
+    stringstyle=\color[HTML]{0055ff},
     keywordstyle=\color[HTML]{e10021},
     commentstyle=\color{gray},
     emph=CascadeObjectDetector,
-    emphstyle=\color{blue}
+    emphstyle=\color{blue},
+    backgroundcolor=\color[HTML]{f6f6f6},
+    frame=single
 }
 %Command ------------------------
 %Title   ------------------------
@@ -55,31 +58,225 @@
 
 \maketitle
 
+\section*{実験の目的}
+インターネット電話を作る過程で, ネットワークやインターネットの基礎に関する知見を深める. 
+
 \subsection*{本課題5.9}
 
-サーバー側、クライアント側のPCでそれぞれ以下のプログラムを実行した。
-\begin{lstlisting}[caption=サーバー側,language=bash]
+サーバ側, クライアント側のPCでそれぞれ以下のプログラムを実行した. 
+\begin{lstlisting}[caption=サーバ側,language=bash]
 $ nc -l 9999 > test_output.txt
 \end{lstlisting}
 \begin{lstlisting}[caption=クライアント側,language=bash]
 $ nc 192.168.0.6 9999 < test_input.txt
 \end{lstlisting}
-その結果、サーバー側のパソコンのtest\_output.txtにクライアント側のtest\_input.fileの内容をコピーすることができた。
+その結果, サーバ側のパソコンのtest\_output.txtにクライアント側のtest\_input.fileの内容をコピーすることができた. 
 
 
 \subsection*{本課題5.10}
-サーバー側、クライアント側のPCでそれぞれ以下のプログラムを実行した。
-\begin{lstlisting}[caption=サーバー側,language=bash]
+サーバ側, クライアント側のPCでそれぞれ以下のプログラムを実行した. 
+\begin{lstlisting}[caption=サーバ側,language=bash]
 $ rec -t raw -b 16 -c 1 -e s -r 44100 - | nc -l 9999
 \end{lstlisting}
 \begin{lstlisting}[caption=クライアント側,language=bash]
 $ nc 192.168.0.6 9999 | play -t raw -b 16 -c 1 -e s -r 44100 -
 \end{lstlisting}
-サーバー側ではrecで収録したデータをncに送り、クライアント側ではncから受け取ったデータをplayで再生している。その結果、サーバー側の音声をクライアント側から聴くことができた。
+サーバ側ではrecで収録したデータをncに送り, クライアント側ではncから受け取ったデータをplayで再生している. その結果, サーバ側の音声をクライアント側から聴くことができた. 
+
+\subsection*{本課題5.11}
+iperfコマンドを使って, バンド幅を測定する. 
+\begin{lstlisting}[caption=,language=bash]
+$ iperf -c 157.82.203.244
+------------------------------------------------------------
+Client connecting to 157.82.203.244, TCP port 5001
+TCP window size:  512 KByte (default)
+------------------------------------------------------------
+[  3] local 157.82.207.172 port 54002 connected with 157.82.203.244 port 5001
+[ ID] Interval       Transfer        Bandwidth
+[  3]  0.0-10.0 sec  99.2 MBytes     83.1 Mbits/sec
+\end{lstlisting}
+\begin{lstlisting}[caption=,language=bash]
+$ iperf -c 157.82.203.244
+------------------------------------------------------------
+Client connecting to 157.82.203.244, TCP port 5001
+TCP window size:  1.00 MByte (default)
+------------------------------------------------------------
+[  4] local 157.82.207.172 port 5001 connected with 157.82.203.244 port 43446
+[ ID] Interval       Transfer        Bandwidth
+[  4]  0.0-10.2 sec  70.1 MBytes     57.9 Mbits/sec
+\end{lstlisting}
+上ではデバイスが3つ, 下ではデバイスが４つつながっている. バンド幅を比較すると, デバイスが3つのときの方がバンド幅が44\%も大きいことがわかる. 
 
 
+\subsection*{本課題6.1}
+
+\begin{lstlisting}[caption=client\_recv.c,language=C]
+#include <netinet/in.h>
+#include <netinet/ip.h>
+#include <netinet/tcp.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <fcntl.h>
+#include <unistd.h>
+#include <arpa/inet.h>
+
+int main(int argc, char *argv[]){
+    int s = socket(PF_INET, SOCK_STREAM,0);
+    struct sockaddr_in addr;
+    addr.sin_family = AF_INET;
+    int addresschecker = inet_aton(argv[1], &addr.sin_addr);//IPアドレス
+    if (addresschecker == 0){perror("IPaddress"); exit(1);}
+    addr.sin_addr.s_addr = inet_addr(argv[1]);
+    addr.sin_port = htons(50000);
+    int ret = connect(s, (struct sockaddr *)&addr, sizeof(addr));
+    if(ret == -1){perror("connect"); exit(1);}
+    char data[1000];
+    while(1){
+        int n = read(s,data,1000*sizeof(unsigned char));
+        if(n == -1){ perror("read"); exit(1); }
+        if (n == 0) break;
+        write(1, data, n);
+    }
+    close(s);
+    return 0;
+}
+\end{lstlisting}
+
+ncコマンドでサーバを立ち上げ, client\_recvをつないでデータを送受信する. 
+\begin{lstlisting}[caption=サーバ側,language=bash]
+$ nc -l 50000
+string sent from the server side
+日本語の送信テスト
+\end{lstlisting}
+\begin{lstlisting}[caption=クライアント側,language=bash]
+$ gcc client_recv.c -o client_recv
+$ ./client_recv 192.168.0.8
+string sent from the server side
+日本語の送信テスト
+\end{lstlisting}
+このように, EOFまで読み取りファイルを出力できていることがわかる. また, ファイルの送信を試みる. 今回は以下の画像を送る. 
+\begin{figure}[H]
+    \begin{center}
+        \includegraphics[width=10cm]{binbows.jpg}
+        \caption{送信した画像}
+    \end{center}
+\end{figure}
+\begin{lstlisting}[caption=サーバ側,language=bash]
+$ nc -l 50000 < original_binbows.jpg
+\end{lstlisting}
+
+\begin{lstlisting}[caption=クライアント側,language=bash]
+$ ./client_recv 192.168.0.8 > downloaded_binbows.jpg
+\end{lstlisting}
+以上のようにすることで, サーバ側のパソコンからクライアント側のパソコンに画像を送信することができた. 
+\begin{lstlisting}[caption=ファイルサイズとハッシュ値の確認,language=bash]
+$ md5sum original_binwows.jpg 
+8a0ee29b68cf48faeb91b8e544d65ef4 original_binbows.jpg
+$ md5sum downloaded_binbows.jpg
+8a0ee29b68cf48faeb91b8e544d65ef4 downloaded_binbows.jpg
+$ ls -l original_binbows.jpg
+-rw-r--r--@ 1 masayukifujita  staff    36766 Jun 19 22:26 original_binbows.jpg
+$ ls -l downloaded_binbows.jpg
+-rw-r--r--@ 1 masayukifujita  staff    36766 Jun 19 22:26 downloaded_binbows.jpg
+\end{lstlisting}
+上記より, ファイルサイズ, md5sumで得られるハッシュ値が一致していることがわかる. 
+
+\subsection*{本課題8.1}
+EOFが出てくるまで送り続けるserv\_send.cが以下である. 
+\begin{lstlisting}[caption=serv\_send.c,language=C]
+#include <stdio.h>
+#include <stdlib.h>
+#include <unistd.h>
+#include <netinet/in.h>
+#include <netinet/ip.h>
+#include <netinet/tcp.h>
+#include <arpa/inet.h>
+
+int main(int argc, char** argv){
+  int ss = socket(PF_INET, SOCK_STREAM, 0);
+  struct sockaddr_in addr;
+  addr.sin_family = AF_INET;
+  addr.sin_port = htons(atoi(argv[1]));
+  addr.sin_addr.s_addr = INADDR_ANY;
+  bind(ss, (struct sockaddr *)&addr, sizeof(addr));
+  listen(ss, 10);
+  struct sockaddr_in client_addr;
+  socklen_t len = sizeof(struct sockaddr_in);
+  int s = accept(ss, (struct sockaddr *)&client_addr, &len);
+  if (s == -1){perror("accept"); exit(1); } else {printf("connected\n");}
+  unsigned char data[1000];
+  while(1){
+      int n = read(0,data,1000);
+      if(n == -1){ perror("read"); exit(1); }
+      if (n == 0) break;
+      write(s,data,n);
+  }
+  close(s);
+  close(ss);
+  return 0;
+}
+\end{lstlisting}
+6.1で作成したclient\_recvと送り合う. 
+\begin{lstlisting}[caption=サーバ側,language=bash]
+$ rec -t raw -b 16 -c 1 -e s -r 44100 - | ./serv_send 50000
+\end{lstlisting}
+\begin{lstlisting}[caption=クライアント側,language=bash]
+$ ./client_recv 192.168.0.8 50000 | play -t raw -b 16 -c 1 -e s -r 44100 -
+\end{lstlisting}
+教科書に記載の通り, サーバを立ち上げた直後にサーバ周辺で聞こえていた音が鳴っている.
+
+\subsection*{本課題8.2}
+接続してきた時点以降にサーバ付近でなっていた音のデータだけが送られるようにしたserv\_send2.cを作成した. 具体的な変更点は, 課題8.1のserv\_sendの23行目のread先が0(標準入力)ではなく新しく作成したpopenとなっており, popenでListing 12に相当するrecコマンドを使っている. popenコマンドはサーバとクライアントが接続されてからrunされるため, 実行すると接続時にサーバ付近で鳴っていた音が送信されるはずである. 　
+\begin{lstlisting}[caption=serv\_send2.c,language=C]
+#include <stdio.h>
+#include <stdlib.h>
+#include <unistd.h>
+#include <netinet/in.h>
+#include <netinet/ip.h>
+#include <netinet/tcp.h>
+#include <arpa/inet.h>
+
+int main(int argc, char** argv){
+  int ss = socket(PF_INET, SOCK_STREAM, 0);
+  struct sockaddr_in addr;
+  addr.sin_family = AF_INET;
+  addr.sin_port = htons(atoi(argv[1]));
+  addr.sin_addr.s_addr = INADDR_ANY;
+  bind(ss, (struct sockaddr *)&addr, sizeof(addr));
+  listen(ss, 10);
+  struct sockaddr_in client_addr;
+  socklen_t len = sizeof(struct sockaddr_in);
+  int s = accept(ss, (struct sockaddr *)&client_addr, &len);
+  if (s == -1){perror("accept"); exit(1);} else {printf("connected\n");}
+  unsigned char data[1000];
+  FILE *fpin;
+  fpin = popen("rec -t raw -b 16 -c 1 -e s -r 44100 -", "r");
+  int desc = fileno(fpin);
+  printf("%d\n",desc);
+  while(1){
+      int n = read(desc,data,1000);
+      if(n == -1){ perror("read"); exit(1); }
+      if (n == 0) break;
+      write(s,data,n);
+  }
+  close(s);
+  close(ss);
+  pclose(fpin);
+  return 0;
+}
+\end{lstlisting}
+以下のように実行すると, 実際に接続時の音がクライアント側のスピーカーから聞こえた.
+\begin{lstlisting}[caption=サーバ側,language=bash]
+$ ./serv_send 50000
+\end{lstlisting}
+\begin{lstlisting}[caption=クライアント側,language=bash]
+$ ./client_recv 192.168.0.8 50000 | play -t raw -b 16 -c 1 -e s -r 44100 -
+\end{lstlisting}
 
 
-\section{参考文献}
-『title』\url{<url>} 2021年n月m日アクセス
+\section*{参考文献}
+『今更聞けない目的別soxの使い方』 \url{https://qiita.com/mountcedar/items/a04ebc4f8c27c226bbff} 2021年6月19日アクセス\\
+『Michaelsoft Binbows』 \url{https://www.reddit.com/r/crappyoffbrands/comments/79bue9/michaelsoft_binbows/} 2021年6月19日アクセス\\
+『How to read from stdin with fgets()?』 \url{https://stackoverflow.com/questions/3919009/how-to-read-from-stdin-with-fgets} 2021年6月19日アクセス\\
+『client not connecting with server C (Socket programming)』 \url{https://stackoverflow.com/questions/30453112/client-not-connecting-with-server-c-socket-programming} 2021年6月19日アクセス
 \end{document}

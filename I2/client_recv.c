@@ -13,7 +13,7 @@ int main(int argc, char *argv[]){
     addr.sin_family = AF_INET;
     int addresschecker = inet_aton(argv[1], &addr.sin_addr);//IPアドレス
     if (addresschecker == 0){perror("IPaddress"); exit(1);}
-    addr.sin_addr.s_addr = inet_addr("127.0.0.1");
+    addr.sin_addr.s_addr = inet_addr(argv[1]);
     addr.sin_port = htons(50000);
     int ret = connect(s, (struct sockaddr *)&addr, sizeof(addr));
     if(ret == -1){perror("connect"); exit(1);}
