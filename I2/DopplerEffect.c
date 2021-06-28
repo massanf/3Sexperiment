@@ -187,8 +187,8 @@ int main(int argc, char ** argv) {
   */
 
 
-  double x = 800.0; // m 
-  double v = -80.0; // m/s
+  double x = 300.0; // m 
+  double v = -20.0; // m/s
   double d = 10;    // m
   double volume = 50; //全体に掛けて音量調節しているだけ
   double gensui = 4; //20log(距離)の20の部分 20だと大きすぎた
@@ -209,8 +209,7 @@ int main(int argc, char ** argv) {
     /* ドップラー効果 */
     double cos = x / pow(pow(x,2)+d, 0.5);
     pad(newY, 0, n);
-    //DopplerEffect(Y, newY, v, cos, n);
-    newY = Y
+    DopplerEffect(Y, newY, v, cos, n);
     x += v*((double)n/44100.0);
     //printf("%f\n",x);
     

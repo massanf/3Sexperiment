@@ -1,0 +1,314 @@
+\documentclass{ltjsarticle}
+\usepackage{luatexja}
+%Packages -----------------------
+\usepackage{listings}
+\usepackage[euler]{textgreek}
+\usepackage{enumitem}
+\usepackage[margin=30mm]{geometry}
+\usepackage{comment}
+\usepackage{hyperref}
+\usepackage{float}
+\usepackage{textcomp}
+\usepackage{xparse}
+%Circuit ------------------------
+\usepackage{amsmath,amssymb}
+\usepackage{graphicx}
+\usepackage{siunitx}
+\usepackage{tikz}
+\usepackage[siunitx, RPvoltages]{circuitikz}
+%Circuit ------------------------
+%Command ---–--------------------
+\renewcommand{\figurename}{図}
+\renewcommand{\baselinestretch}{1.1}
+\lstset{
+    numbers=left,
+    basicstyle={\ttfamily},
+    identifierstyle={\small},
+    commentstyle={\smallitshape},
+    keywordstyle={\small\bfseries},
+    ndkeywordstyle={\small},
+    stringstyle={\small\ttfamily},
+    frame={tb},
+    breaklines=true,
+    columns=[l]{fullflexible},
+    xrightmargin=0\zw,
+    xleftmargin=3\zw,
+    numberstyle={\scriptsize},
+    stepnumber=1,
+    %numbersep=1,
+    lineskip=-0.5ex,
+    keywordstyle=\color[HTML]{e10021},
+    commentstyle=\color{gray},
+    emph=CascadeObjectDetector,
+    emphstyle=\color{blue}
+}
+%Command ------------------------
+%Title   ------------------------
+\begin{titlepage}
+    \title{実験レポートI2}
+    \author{東京大学工学部電気電子工学科 03210517\\藤田 誠之\\~\\ 共同実験者  河野亮介・梶谷優貴・パリナヨックサタユ}
+    \date{June 13, 2021}
+  \end{titlepage}
+%Title   ------------------------
+\begin{document}
+
+\maketitle
+
+\setcounter{section}{6}
+
+\subsection{平等電界の火花電圧}
+\subsubsection{火花電圧の測定}
+
+球ー球電極を使用し、圧力pおよびギャップ長dを変化させて、比較的pdの大きい範囲での火花電圧$V_s$を求める。以下は、横軸をpd[Pa・mm]をとし、縦軸を火花電圧としたグラフである。また、実線は平均値を繋げたものである。
+
+\begin{figure}[H]
+    \begin{center}
+        \includegraphics[width=13cm]{figures/6.1big.png}
+        \caption{球-球電極}
+    \end{center}
+\end{figure}
+
+このように、pdが増加するにつれて火花電圧がおおよそ比例関係となり増加していることがわかる。また、このグラフの0付近を拡大したものが以下である。
+
+\begin{figure}[H]
+    \begin{center}
+        \includegraphics[width=13cm]{figures/6.1small.png}
+        \caption{球-球電極 拡大}
+    \end{center}
+\end{figure}
+
+また、球ー平板電極の火花電圧の計測結果をグラフにすると、以下のようになった。
+
+\begin{figure}[H]
+    \begin{center}
+        \includegraphics[width=13cm]{figures/flat.png}
+        \caption{被覆電極-平板電極}
+    \end{center}
+\end{figure}
+
+このように、拡大するとpdの値が0に近づくにつれ火花電圧が増加していることがわかる。火花放電は加速された電子が気体分子と衝突し、気体を電離させることによって起きるため、pdが極端に小さいと分子の数が少なくなってしまい必要となる電圧が大きくなるからである。パッシェン曲線も、極小値を持つ下に凸の曲線が特徴であるため、パッシェンの法則が成立することが確認できた。
+
+\subsubsection{火花電圧の予測}
+火花電圧の理論値を考える。以下の式を満たすような最低の印加電圧値が、その初期電子発生箇所に対応する放電電圧となる。
+
+\[
+\int_{x_1}^{x_2} \alpha dx = K
+\]
+
+\begin{center}
+E/p < 31.6において
+\[
+\alpha(E) = 0
+\]
+\\
+31.6 $\leq$ E/p < 60.0 において
+\[
+\alpha(E) = \frac{p}{10000} \{ 1.047 (E/p - 28.5)^2 - 12.6 \}
+\]
+\\
+60.0 $\leq$ E/p < 100.0 において
+\[
+\alpha(E) = \{1.0 - 0.00674755(E/p-60)\} \frac{p}{10000} \{1.047(E/p-28.5)^2 - 12.6\} 
+\]
+\\
+100.0 $\leq$ E/p において
+\[
+\alpha(E) = 15.0 p exp(\frac{-365}{E/p})    
+\]
+\end{center}
+
+この積分は$x_1$を陰極、$x_2$を陽極とした線積分である。K=10、gap=0.5mmとし、それぞれのpについて積分値がKとなるような最小のVを求める。ただし、半径rによって通るパスが異なるため、それぞれの半径で計算する。
+
+\begin{figure}[H]
+    \begin{center}
+        \includegraphics[width=11cm]{figures/curves.png}
+        \caption{積分の計算結果}
+    \end{center}
+\end{figure}
+
+なお、曲線のガタツキは計算時に生じる誤差と考えられる（これ以上精度を出そうとすると出力に時間がかかりすぎる）。実際には、最も火花が発生しやすいパスを通って火花は発生する。つまり、火花電圧はすべてのパスのうち最小のものとなる。それを取り出したものが以下である。
+
+\begin{figure}[H]
+    \begin{center}
+        \includegraphics[width=11cm]{figures/minimums.png}
+        \caption{図4のグラフのうち最小値}
+    \end{center}
+\end{figure}
+
+これが$V_s$のグラフである。6.1.1のグラフに重ねて表示したものは以下のようになる。
+
+\begin{figure}[H]
+    \begin{center}
+        \includegraphics[width=11cm]{figures/withtheory.png}
+        \caption{理論値を表示}
+    \end{center}
+\end{figure}
+定量的に判断することは難しいが、K=10付近である程度傾向が実験値と一致していることがわかる。
+
+\subsection{不平等電界の火花電圧と極性効果}
+印加電圧を直流の負、直流の正、交流電圧とし、それぞれ円錐ー平板電極の放電電圧、ギャップ長特性を測定した結果、以下のようになった。
+
+\begin{figure}[H]
+    \centering
+    \begin{minipage}[b]{0.48\textwidth}
+      \includegraphics[width=7cm]{figures/6.2/negative.png}
+      \caption{直流負}
+    \end{minipage}
+    \hfill
+    \begin{minipage}[b]{0.48\textwidth}
+      \includegraphics[width=7cm]{figures/6.2/positive.png}
+      \caption{直流正}
+    \end{minipage}
+\end{figure}
+
+\begin{figure}[H]
+    \begin{center}
+        \includegraphics[width=8cm]{figures/6.2/positive.png}
+        \caption{直流正}
+    \end{center}
+\end{figure}
+
+\newpage
+\subsection{グロー放電の観測}
+ガイスラー管の気圧を50~0.5Torrの範囲で変化範囲で変化させて、直流電界下におけるグロー放電の電圧ー電流特性を測定する。
+
+\begin{figure}[H]
+    \centering
+    \begin{minipage}[b]{0.48\textwidth}
+      \includegraphics[width=7cm]{figures/6.3/1torr.png}
+      \caption{1torr}
+    \end{minipage}
+    \hfill
+    \begin{minipage}[b]{0.48\textwidth}
+      \includegraphics[width=7cm]{figures/6.3/5torr.png}
+      \caption{5torr}
+    \end{minipage}
+\end{figure}
+
+\begin{figure}[H]
+    \begin{center}
+        \includegraphics[width=8cm]{figures/6.3/20torr.png}
+        \caption{20torr}
+    \end{center}
+\end{figure}
+
+その結果、以上のようになった。気圧が大きくなるにつれ、電圧が極小となる電流の値が増加していくことがわかる。
+
+\subsection{分光計測}
+\subsubsection{水素プラズマの温度測定}
+与えられた計測結果について、発光スペクトルのピークを考える。まずは、各測定結果の強度を分光期間度曲線で除することで、測定結果を均一にする。この際、感度曲線の値は整数値でのみあたえられているため、測定波長を四捨五入したものを元に補正した。\\
+
+水素原子の4つの発光強度の理論値を計算すると656nm, 486nm, 434nm, 410nmとなる。その前後についてプロットを行い、さらにフィッティングを行うことで、最大となっている波長とその時の強度を計測した。
+
+\begin{figure}[H]
+    \centering
+    \begin{minipage}[b]{0.48\textwidth}
+      \includegraphics[width=7cm]{figures/6.4.1/1.png}
+      \caption{410nm}
+    \end{minipage}
+    \hfill
+    \begin{minipage}[b]{0.48\textwidth}
+      \includegraphics[width=7cm]{figures/6.4.1/2.png}
+      \caption{434nm}
+    \end{minipage}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \begin{minipage}[b]{0.48\textwidth}
+      \includegraphics[width=7cm]{figures/6.4.1/3.png}
+      \caption{486nm}
+    \end{minipage}
+    \hfill
+    \begin{minipage}[b]{0.48\textwidth}
+      \includegraphics[width=7cm]{figures/6.4.1/4.png}
+      \caption{656nm}
+    \end{minipage}
+\end{figure}
+
+フィッティングした曲線から、最大となるときの波長$\lambda$と強度Iを読み取ると、以下のようになった。
+
+\begin{table}[H]
+    \begin{center}
+        \begin{tabular}{|c|c|c|} \hline
+            波長$\lambda$[nm] & 強度I & 重畳スペクトル \\ \hline
+            406.04 & 8131.7 & 6152.8 \\ \hline
+            433.47 & 7618.4 & 5259.2 \\ \hline
+            485.87 & 15896 & 3185.4 \\ \hline
+            655.77 & 99061 & 3089.3 \\ \hline
+        \end{tabular}
+    \end{center}
+\end{table}
+
+410nmのスペクトルと434nmのスペクトルは、波長が非常に近いため、互いに影響を及ぼしていると考え、410nmの概形から434nmの重畳を引いた。\\
+この波長と強度を与えられたBalmer系列の定数と共にBoltzmannプロットの式
+\[
+    log\left(\frac{I\lambda}{gA}\right) = - \frac{1.4388E}{T} + \mbox{Const.}
+\]
+に代入しプロットした。
+
+\begin{figure}[H]
+    \begin{center}
+        \includegraphics[width=8cm]{figures/6.4.1/Htemp.png}
+        \caption{補正後}
+    \end{center}
+\end{figure}
+
+
+\subsubsection{窒素プラズマのスペクトル分析}
+与えられた実験のデータを用いて、横軸を波長、縦軸を発光強度とし、スペクトルをプロットすると以下のようになった。
+
+\begin{figure}[H]
+    \begin{center}
+        \includegraphics[width=8cm]{figures/N2spec.png}
+        \caption{窒素スペクトル}
+    \end{center}
+\end{figure}
+
+ピークと、対応するその波数、電子エネルギー、電子速度はそれぞれ以下のようになる。ただし、電子エネルギーは以下のように計算した。\\
+
+\[
+    \frac{1}{2}m_ev^2 = E_d \times 1.60 \times 10^{-19}
+\]
+
+窒素分子のエネルギー遷移過程のエネルギー差を考えると、
+\begin{table}[H]
+    \begin{center}
+        \begin{tabular}{|c|c|c|c|} \hline
+            波長$\lambda$ [nm] & 波数K[$10^5cm^{-1}$] & 電子エネルギー $E_d$[eV
+            ] & 電子速度v[$10^6$m/s]\\ \hline
+            315 & 3.1746 & 3.9360 & 1.1758\\ \hline
+            336.5 & 2.9718 & 3.6846 & 1.1377 \\ \hline
+            353 & 2.8329 & 3.5124 & 1.1107 \\ \hline
+            357 & 2.8011 & 3.4729 & 1.1045 \\ \hline
+            366.5 & 2.7285 & 3.3829 & 1.0901  \\ \hline
+            370.5 & 2.6991 & 3.3465  & 1.0842 \\ \hline
+            374.5 & 2.6702 & 3.3106 & 1.0784 \\ \hline
+            379.8 & 2.6630 & 3.2645 & 1.078 \\ \hline
+            393.5 & 2.5413 & 3.1508 & 1.0520 \\ \hline
+            399 & 2.5387 & 3.1476 & 1.0515 \\ \hline
+        \end{tabular}
+    \end{center}
+\end{table}
+
+窒素分子のエネルギー遷移($N_2C^3\Pi_u \rightarrow N_2B^3\Pi_g$)のエネルギーを考え、上の表と対応させると、以下のようになる。
+
+\begin{table}[H]
+    \begin{center}
+        \begin{tabular}{|c|c|c|} \hline
+            遷移 & 当てはまる波長 & 相対誤差 \\ \hline
+            SP02 & 379.8 & 0.15\% \\ \hline
+            SP13 & 374.5 & 0.25\% \\ \hline
+        \end{tabular}
+        \caption{観測されたピークに当てはまる遷移}
+    \end{center}
+\end{table}
+
+他のピークについては、違う遷移におけるエネルギー準位の差を表しているものと推測される。例えば、$N_2B^2 \Pi_u \rightarrow N_2^+X^2\Pi_g^+$の遷移などのピークが含まれていると考えられる。
+
+
+
+\section{参考文献}
+学生実験教科書 2021年6月27日アクセス\\
+『2021年度前期実験　E1　気体エレクトロニクス』　\url{https://www.hvg.t.u-tokyo.ac.jp/lecture/exp2021summer/} 2021年6月27日アクセス
+\end{document}
