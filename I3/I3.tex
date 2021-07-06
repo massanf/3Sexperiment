@@ -1,0 +1,193 @@
+\documentclass{ltjsarticle}
+\usepackage{luatexja}
+%Packages -----------------------
+\usepackage{listings}
+\usepackage[euler]{textgreek}
+\usepackage{enumitem}
+\usepackage[margin=30mm]{geometry}
+\usepackage{comment}
+\usepackage{hyperref}
+\usepackage{float}
+\usepackage{textcomp}
+\usepackage{xparse}
+%Circuit ------------------------
+\usepackage{amsmath,amssymb}
+\usepackage{graphicx}
+\usepackage{siunitx}
+\usepackage{tikz}
+\usetikzlibrary{calc,patterns,angles,quotes}
+\usepackage[siunitx, RPvoltages]{circuitikz}
+%Circuit ------------------------
+%Command ---–--------------------
+\renewcommand{\figurename}{図}
+\renewcommand{\baselinestretch}{1.1}
+\lstset{
+    numbers=left,
+    basicstyle={\ttfamily},
+    identifierstyle={\small},
+    commentstyle={\smallitshape},
+    keywordstyle={\small\bfseries},
+    ndkeywordstyle={\small},
+    stringstyle={\small\ttfamily},
+    frame={tb},
+    breaklines=true,
+    columns=[l]{fullflexible},
+    xrightmargin=0\zw,
+    xleftmargin=3\zw,
+    numberstyle={\scriptsize},
+    stepnumber=1,
+    %numbersep=1,
+    lineskip=-0.5ex,
+    keywordstyle=\color[HTML]{e10021},
+    commentstyle=\color{gray},
+    emph=CascadeObjectDetector,
+    emphstyle=\color{blue}
+}
+%Command ------------------------
+%Title   ------------------------
+\begin{titlepage}
+\title{実験レポート I3}
+\author{東京大学工学部電気電子工学科 03210517 \\ 藤田 誠之 \\共同実験者  河野亮介・梶谷優貴・パリナヨックサタユ}
+\date{July 4, 2021}
+\end{titlepage}
+%Title   ------------------------
+
+\begin{document}
+
+\maketitle
+
+\section{発展課題}
+\subsection{やまびこ}
+I3の発展課題として, wav形式の音声ファイルを加工しエフェクトを加えるプログラムを作成した. \\
+以下の関数を追加した. 
+\begin{lstlisting}[caption=やまびこ,language=C]
+void yamabiko(complex double * y,long n) {
+  double AttenuationRate = 0.5;
+  int DelayTime = 2500;
+  int Repeatnum = 6;
+  for(int i = 0; i < n; i++){
+    for(int r = 1; r < Repeatnum+1; r++){
+      int m = i - r * DelayTime;
+      /* 元のデータに残響を追加 */
+      if(m >= 0){
+        y[i] += pow(AttenuationRate , r) * y[m];
+      }
+    }
+  }
+}
+\end{lstlisting}
+また, main関数に以下を追加し, 上の関数にifftされたXを渡す.
+\begin{lstlisting}[caption=,language=C]
+/* IFFT -> Z */
+ifft(Y, X, n);
+/* やまびこ */
+yamabiko(X,n);
+/* 標本の配列に変換 */
+complex_to_sample(X, buf, n);
+\end{lstlisting}
+やまびこ関数にはAttenuationRate, DelayTime, Repeatnumの変数がある. 各データにつき, DelayTimeだけ前のデータに$\mbox{AttenuationRate}^{経過時間}$を掛けたものをRepeatnum回だけ足している. 結果, 音声ファイルを通すことによって, エコーがかかったような表現をすることができる. 
+
+\subsection{ドップラー効果}
+音源を与え, それにドップラー効果を加える. ドップラー効果といえば車や飛行機などの音を発している物体が通り過ぎる際に音がだんだんと低くなるというイメージがあるが, これは物体の進行方向と観測者がずれた状態にあるときにのみ起こる. 以下のような状態である. 
+
+\begin{figure}[H]
+    \begin{center}
+        \begin{tikzpicture}
+            \draw (0,0) -- (8,0);
+            \filldraw[black] (4,4) circle (2pt) node[anchor=west] {観測者};
+
+            \coordinate (origo) at (1,0);
+            
+            \draw (1,-0.1) node [below] {$音源$};
+
+            \draw[very thick,gray,->] (origo) -- ++(2,0) coordinate (mary);
+            \draw (3,-0.1) node [below] {$v$};
+
+            \draw[very thick,dashed,gray,->] (origo) -- ++(0.6,0.8) coordinate (bob);
+            \draw (0.8,0.7) node [above] {$v\cos\theta$};
+            
+            \draw (4,2) node [right] {$d$};
+
+            \draw (4,-0.1) node [below] {$H$};
+
+            \pic [draw, "$\theta$", angle eccentricity=1.5] {angle = mary--origo--bob};
+
+            \draw [thin,dotted,short] (4,0) -- ++ (0,4);
+
+            \fill[black] (origo) circle (0.08);
+            \draw (1,-0.1) node [below] {$音源$};
+        \end{tikzpicture}
+        \caption{ドップラー効果}
+    \end{center}
+\end{figure}
+
+この状態で音源が周波数fの音を発しているとすると, 音速をVとして観測者が観測する音程は
+\[
+f' = \frac{V}{V+v\cos\theta}f
+\]
+となる. また, 音源と点Hの距離を$x$とすると, 
+\[
+\cos\theta = \frac{x}{\sqrt{x^2+d^2}}
+\]
+となる. よって, 周波数領域にて音源の周波数を$f'-f$だけずらせば良い. 
+実際に移動した様子は, 以下のようになっている(周波数ごとに複素数の絶対値をgnuplotを用いてプロットした). これは, 音源が近づいているとして周波数を上げたときの周波数領域のグラフである. 実際に, 周波数が大きくなっていることがわかる. 
+\begin{figure}[H]
+    \begin{center}
+        \includegraphics[width=8cm]{figures/before.png}
+        \caption{加工前}
+    \end{center}
+\end{figure}
+\begin{figure}[H]
+    \begin{center}
+        \includegraphics[width=8cm]{figures/after.png}
+        \caption{加工後}
+    \end{center}
+\end{figure}
+以下がドップラー効果を再現する関数である. 
+\begin{lstlisting}[caption=DopplerEffect,language=C]
+void DopplerEffect(complex double * y, complex double * newy, double v, double cos, long n) {
+  for(int i = 0; i < n/2; i++){
+    double dj = (double)i*340/(340+v*cos);
+    int j = (int)dj;
+    /* int j = 2*i; */
+    if (j < n/2){
+      newy[j] = y[i];
+    }
+  }
+  for(int i = n; i < n/2; i--){
+    double dj = (double)(n-i)*340/(340+v*cos);
+    int j = (int)(dj);
+    /* int j = 2*i; */
+    if (j > n/2){
+      newy[n-j] = y[i];
+    }
+  }
+}
+\end{lstlisting}
+また, main関数に以下を追記する. 
+\begin{lstlisting}[caption=,language=C]
+/*ドップラー効果*/
+double cos = x / pow(pow(x,2)+d, 0.5);
+DopplerEffect(Y, newY, v, cos, n);
+x += v*((double)n/44100.0);
+\end{lstlisting}
+
+さらに, よりリアリティを出すために, 距離による減衰も取り入れた. 理論的には, 音量について距離をデシベルで表したものから20log(距離)を引けば良いのだが, これを実際に取り入れると音量が小さくなりすぎたため, 出力ファイルを確認して調整した. 実際は係数は20でなく4とした. \\
+以下が実際に追加したプログラムである. 
+\begin{lstlisting}[caption=,language=C]
+/*距離による減衰*/
+for(int i = 0; i < n; i++){
+    newY[i] = newY[i] * volume / exp(gensui*log10(fabs(sqrt(x*x+d*d))));
+}
+\end{lstlisting}
+実際に出力した結果が以下である. 救急車の音源とエンジンの音源はそれぞれ音源で取られた音であり, \_dopplerがついているファイルは加工後のものである. 
+
+\url{https://drive.google.com/drive/folders/1Y8z3MWJW7kxq39ZnGKNe21MTsuJgzJ1A?usp=sharing}
+
+このように周波数をフーリエ変換を使って変えることができるのは, 音声技術において非常に強力であると感じた. 
+
+\section{参考文献}
+『騒音の基礎知識』\url{http://www.city.gifu.lg.jp/secure/6589/soukiso.pdf} 2021年7月1日アクセス\\
+『ドップラー効果』 \url{https://ja.wikipedia.org/wiki/ドップラー効果} 2021年6月30日アクセス\\
+学生実験教科書
+\end{document}
