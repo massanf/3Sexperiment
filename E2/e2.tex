@@ -55,8 +55,176 @@
 
 \maketitle
 
+\section{検討事項}
+負荷試験の結果と簡易等価回路から求めた結果とを比較し、その差の原因について考察せよ。
+
+無負荷試験、拘束試験から、簡易等価回路は以下のように求まった。
+\begin{figure}[H]
+    \begin{center}
+        \begin{circuitikz}[american currents,american resistors]
+            \ctikzset{american inductors,resistor=european}
+            \draw (0,0)
+            to[short] ++(2,0)
+            to[short] ++(0,1)
+            to[short] ++(-0.5,0)
+            to[R=$G_0$] ++(0, 2)
+            to[short] ++ (0.5,0)
+            to[short] ++ (0,1)
+            to[short] ++ (-2,0);
+            \draw (2,3)
+            to[short] ++(0.5,0)
+            to[L=$B_0$] ++(0,-2)
+            to[short] ++(-0.5,0);
+            \draw (2,4)
+            to[R,l_=$r_1+r'_2$] ++(2.5,0)
+            to[L,l_=$x_1+x'_2$] ++(2.5,0);
+            \draw(2,0)
+            to[short] ++(5,0)
+            to[vR,l_=$r'_2\frac{1-s}{s}$] ++(0,4);
+        \end{circuitikz}
+        \caption{L型簡易等価回路 回路図}
+    \end{center}
+\end{figure}
+
+\[
+G_0 = \SI{4.66}{m\Omega}, B_0 = \SI{0.509}{H} r_1=r'_2 = \SI{0.817}{\Omega}, x_1+x'_2 = \SI{2.125}{H}
+\]
+
+これを用いて、以下のようにトルクを計算する。
+\[
+T(s) = \frac{1}{2\pi\frac{f}{p}}\frac{3V^2_1}{\left(r_1+\frac{r'_2}{s}\right)^2+(x_1+x'_2)^2}\frac{r'_2}{s}
+\]
+\[
+f=\SI{50}{Hz}, p=2, V_1 = \SI{200}{V}
+\]
+これが、簡易等価回路から求められる速度特性である。\\
+また、実測値をプロットする。滑りは以下の式で求めることができる。
+\[
+s = \frac{n_s-n}{n_s}
+\]
+\[
+n_s = \SI{1500}{rpm}    
+\]
+トルクは、DCの値から以下のように求められる。
+\[
+T = \frac{P_2}{2\pi\frac{n}{60}} = \frac{30V_2I_2}{\pi n}
+\]
+また、力を用いると以下のようにも求められる。
+\[
+T = F \cdot L    
+\]
+\[
+L = \SI{0.287}{m}
+\]
+これらをすべて一つのグラフにプロットすると、以下のようになる。
+\begin{figure}[H]
+    \begin{center}
+        \includegraphics[width=12cm]{figures/2/results.png}
+        \caption{速度特性}
+    \end{center}
+\end{figure}
+プロットすると、実験値のトルクは等価回路で求められたトルクよりも小さくなっていることがわかる。
+
+誘導機の等価回路を図 2 に示したものではなく，図 9 に示した T 型等価回路としたときの諸量の速度特性をグラフに示し，図 2 に示した等価回路から導いた結果との差について考察せよ.
+
+負荷実験では励磁電流$I_0$は電機子電流全体$I'_1$に対して十分小さいため、励磁電流の位置を移しても問題ない（というより、T型の方が実際の構造に近く、励磁電流が電気子電流全体に比べて十分に小さいためL型の等価回路を用いて計算しても計算しても大きな結果の差が出ないとしてL型が使われている）。
+
+\begin{figure}[H]
+    \begin{center}
+        \begin{circuitikz}[american currents]
+            \ctikzset{american inductors,resistor=european}
+            \draw (0,0)
+            to[short] (4,0)
+            to[short] ++(0,1)
+            to[short] ++(-0.5,0)
+            to[R=$G_0$] ++(0, 2)
+            to[short] ++ (0.5,0)
+            to[short] ++ (0,1);
+            \draw (0,4)
+            to[R,l_=$r_1$] ++ (2,0)
+            to[L,l_=$x_1$] ++ (2,0);
+            \draw (4,3)
+            to[short] ++(0.5,0)
+            to[L=$B_0$] ++(0,-2)
+            to[short] ++(-0.5,0);
+            \draw (4,4)
+            to[R,l_=$r'_2$] ++(2,0)
+            to[L,l_=$x'_2$] ++(2,0);
+            \draw(4,0)
+            to[short] ++(4,0)
+            to[vR,l_=$r'_2\frac{1-s}{s}$] ++ (0,4);
+        \end{circuitikz}
+        \caption{T型簡易等価回路 回路図}
+    \end{center}
+\end{figure}
+L型と同じように計算すると、
+\[
+    I'_1 = \frac{V_2}{\sqrt{\left(\frac{r'_2}{s}\right)^2+x'^2_2}}
+\]
+また、
+\[
+    Y = G_0 + jB_0
+\]
+\[
+    Z_1 = r_1+jx_1
+\]    
+\[
+    Z_2 = \frac{1}{Y}
+\]
+\[
+    Z_3 = r'_2 + jx'_2
+\]
+として、
+\[
+    V_2 = \frac{\frac{Z2 Z3}{Z2+Z3}}{Z1+\frac{Z2 Z3}{Z2+Z3}} V
+\]
+さらに
+\[
+    P_{out} = 3I'^2_1\frac{r'_2}{s}(1-s)
+\]
+\[
+    T = \frac{1}{2\pi\frac{f}{p}}\frac{V^2_2}{\left(\frac{r'_2}{s}\right)^2+x'^2_2}\frac{r'_2}{s}
+\]
+このように計算すると以下のようになった。おそらく何かがおかしい。
+\begin{figure}[H]
+    \begin{center}
+        \includegraphics[width=12cm]{figures/2/results_t.png}
+        \caption{*****}
+    \end{center}
+\end{figure}
+
+トルクの差を求める。
+\begin{figure}[H]
+    \begin{center}
+        \includegraphics[width=12cm]{figures/2/experiments.png}
+        \caption{*****}
+    \end{center}
+\end{figure}
+
+$T = as + b$として、直線の傾きを最小２乗法で近似すると以下のようになった。
+
+\begin{table}[H]
+    \begin{center}
+        \begin{tabular}{|c|c|c|c|} \hline            
+            & a & b & 傾きの誤差率\\ \hline
+            等価回路 & 228.9 & 0.0550 &  \\ \hline
+            回転力から求めたトルク & 195.4 & -1.52 & 14.6\% \\ \hline
+            電気量から求めたトルク & 258.4 & -2.30 & 12.9\% \\ \hline
+        \end{tabular}
+        \caption{*****}
+    \end{center}
+\end{table}
+
+この結果から、電気量から計算されるトルクの方が誤差が大きいことがわかる。それはそう。
+
+誘導電動機には安定に運転可能な速度 (すべり) の範囲があるが，その理由を説明せよ.説明においては適当な負荷ト
+ルク特性を仮定せよ.
+
+誘導電動機で安定に運転可能な滑りの範囲は、最大トルクを与える滑り以下の滑りである。arguagugadgaivfdfsdf gEg
+
 
 
 \section{参考文献}
-『title』\url{<url>} 2021年n月m日アクセス
+『誘導機の等価回路』\url{http://energychord.com/children/energy/motor/ind/contents/ind_eq.html} 2021年7月7日アクセス
+https://www.tetras.uitec.jeed.go.jp/files/data/200506/20050614/20050614.pdf
 \end{document}
